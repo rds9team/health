@@ -2,7 +2,7 @@ const INTERVAL_MS = 2500;
 const HISTORY = 60; // 2.5秒 × 60 = 直近 2.5 分
 
 const $ = (id) => document.getElementById(id);
-const history = [];
+const history = [0.3, 0.4, 0.2, 0.5, 0.3, 0.4, 0.3, 0.5];
 
 const DEFAULT_API_ENDPOINT = "https://api.rds9.net/health";
 const FALLBACK_ENDPOINTS = [

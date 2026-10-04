@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark light">
-  <title>rds9 health — サービスの様子</title>
+  <meta name="color-scheme" content="dark">
+  <title>rds9 health — システムの様子</title>
   <link rel="icon" href="https://rds9.net/index/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./app.css">
 </head>
@@ -22,15 +22,15 @@
     </header>
 
     <section class="hero">
-      <p class="eyebrow">SYSTEM & BOT STATUS</p>
+      <p class="eyebrow">SERVER & BOT STATUS</p>
       <h1 id="headline">正常に稼働中</h1>
-      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人を監視しています。</p>
+      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人の変態を監視しています。</p>
     </section>
 
-    <section class="grid" aria-label="サービスの状況">
+    <section class="grid" aria-label="システムの状況">
       <!-- まきぐもぼっと (一般公開Bot) -->
       <article class="card gauge">
-        <div class="card-head w-full">
+        <div class="card-head">
           <h2>まきぐもぼっと</h2>
           <span class="badge-public">一般公開中</span>
         </div>
@@ -41,7 +41,7 @@
           </svg>
           <div class="ring-label">
             <span class="num" id="maki-users">—</span>
-            <span class="unit">人監視</span>
+            <span class="unit">人</span>
           </div>
         </div>
         <p class="sub" id="maki-sub">46 サーバー · Ping — ms</p>
@@ -52,7 +52,7 @@
 
       <!-- CPU -->
       <article class="card gauge">
-        <div class="card-head w-full">
+        <div class="card-head">
           <h2>CPU</h2>
         </div>
         <div class="ring" id="cpu-ring" style="--value:0">
@@ -73,7 +73,7 @@
 
       <!-- メモリ -->
       <article class="card gauge">
-        <div class="card-head w-full">
+        <div class="card-head">
           <h2>メモリ</h2>
         </div>
         <div class="ring" id="mem-ring" style="--value:0">
