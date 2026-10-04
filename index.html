@@ -22,9 +22,9 @@
     </header>
 
     <section class="hero">
-      <p class="eyebrow">SERVER & BOT STATUS</p>
+      <p class="eyebrow">SERVER STATUS</p>
       <h1 id="headline">正常に稼働中</h1>
-      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人を監視しています。</p>
+      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けています。</p>
     </section>
 
     <section class="grid" aria-label="システムの状況">
@@ -78,49 +78,38 @@
         </svg>
       </article>
 
-      <!-- 4. まきぐもぼっと (1ボット単体・人数・サーバー数・Pingをいい感じに) -->
-      <article class="card full maki-card">
+      <!-- 4. まきぐもぼっと (1ボット単体・余計な文字や推測のないシンプルな柱状バー表示) -->
+      <article class="card full">
         <div class="card-head">
-          <div class="maki-head-left">
-            <h2>まきぐもぼっと</h2>
-            <span class="badge-public">一般公開中</span>
-          </div>
-          <a href="https://rds9.net/makigumo/" target="_blank" class="maki-link">公式Webサイト ↗</a>
+          <h2>まきぐもぼっと</h2>
         </div>
-
-        <!-- 3大メトリクス（人数 · サーバー数 · Ping） -->
-        <div class="maki-metrics">
-          <div class="maki-metric-item">
-            <span class="maki-label">監視人数</span>
-            <div class="maki-val-wrap">
-              <span class="maki-val" id="maki-users">—</span>
-              <span class="maki-unit">人</span>
+        <div class="bot-metrics">
+          <div class="bot-metric">
+            <div class="bot-metric-info">
+              <span class="bot-metric-label">ユーザー数</span>
+              <span class="bot-metric-value"><strong id="maki-users">—</strong> 人</span>
+            </div>
+            <div class="bot-bar-track">
+              <div class="bot-bar-fill" id="bar-users" style="width: 70%;"></div>
             </div>
           </div>
-          <div class="maki-metric-item">
-            <span class="maki-label">参加サーバー数</span>
-            <div class="maki-val-wrap">
-              <span class="maki-val" id="maki-guilds">—</span>
-              <span class="maki-unit">サーバー</span>
+          <div class="bot-metric">
+            <div class="bot-metric-info">
+              <span class="bot-metric-label">参加サーバー</span>
+              <span class="bot-metric-value"><strong id="maki-guilds">—</strong> サーバー</span>
+            </div>
+            <div class="bot-bar-track">
+              <div class="bot-bar-fill" id="bar-guilds" style="width: 46%;"></div>
             </div>
           </div>
-          <div class="maki-metric-item">
-            <span class="maki-label">応答速度 (Ping)</span>
-            <div class="maki-val-wrap">
-              <span class="maki-val" id="maki-ping">—</span>
-              <span class="maki-unit">ms</span>
+          <div class="bot-metric">
+            <div class="bot-metric-info">
+              <span class="bot-metric-label">Ping</span>
+              <span class="bot-metric-value"><strong id="maki-ping">—</strong> ms</span>
             </div>
-          </div>
-        </div>
-
-        <!-- 柱状バー -->
-        <div class="maki-bar-wrap">
-          <div class="bar-track">
-            <div class="bar-fill" id="maki-bar-fill" style="width: 100%;"></div>
-          </div>
-          <div class="maki-bar-footer">
-            <span>監視変態数の規模 (Active)</span>
-            <span class="sub" id="maki-bar-desc">46 サーバーにて常時稼働中</span>
+            <div class="bot-bar-track">
+              <div class="bot-bar-fill" id="bar-ping" style="width: 35%;"></div>
+            </div>
           </div>
         </div>
       </article>

@@ -130,13 +130,21 @@ function renderMaki(m) {
   const guilds = m.guilds || 46;
   const ping = m.ping !== undefined ? Number(m.ping).toFixed(1) : '182.9';
 
-  if ($('maki-stat')) $('maki-stat').textContent = Number(users).toLocaleString();
   if ($('maki-users')) $('maki-users').textContent = Number(users).toLocaleString();
   if ($('maki-guilds')) $('maki-guilds').textContent = Number(guilds).toLocaleString();
   if ($('maki-ping')) $('maki-ping').textContent = ping;
 
-  if ($('maki-bar-desc')) {
-    $('maki-bar-desc').textContent = `${guilds} サーバーにて常時稼働中 (Ping ${ping} ms)`;
+  if ($('bar-users')) {
+    const userPct = Math.min(100, Math.max(10, (users / 2000) * 100));
+    $('bar-users').style.width = `${userPct.toFixed(0)}%`;
+  }
+  if ($('bar-guilds')) {
+    const guildPct = Math.min(100, Math.max(10, (guilds / 100) * 100));
+    $('bar-guilds').style.width = `${guildPct.toFixed(0)}%`;
+  }
+  if ($('bar-ping')) {
+    const pingPct = Math.min(100, Math.max(10, (Number(ping) / 400) * 100));
+    $('bar-ping').style.width = `${pingPct.toFixed(0)}%`;
   }
 }
 

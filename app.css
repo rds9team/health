@@ -250,117 +250,60 @@ h1 {
   margin-top: 12px;
 }
 
-/* まきぐもぼっと 専用カード (1ボット特化・見やすさ重視) */
-.maki-card {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* まきぐもぼっと (原本に調和するミニマルなメトリクス & バー) */
+.bot-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px 28px;
+  margin-top: 16px;
 }
 
-.maki-head-left {
+.bot-metric {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
 }
 
-.maki-head-left h2 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: .02em;
-}
-
-.maki-link {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-  transition: opacity .15s;
-}
-.maki-link:hover {
-  text-decoration: underline;
-  opacity: .85;
-}
-
-.maki-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  background: color-mix(in srgb, var(--card) 60%, var(--bg));
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 16px 20px;
-}
-
-@media (max-width: 580px) {
-  .maki-metrics {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-}
-
-.maki-metric-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.maki-label {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.maki-val-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.maki-val {
-  font-family: var(--mono);
-  font-size: clamp(22px, 3.5vw, 28px);
-  font-weight: 700;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.maki-unit {
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.maki-bar-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.bar-track {
-  width: 100%;
-  height: 8px;
-  background: color-mix(in srgb, var(--line) 80%, black);
-  border-radius: 999px;
-  overflow: hidden;
-  position: relative;
-}
-
-.bar-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.maki-bar-footer {
+.bot-metric-info {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
+  align-items: baseline;
+}
+
+.bot-metric-label {
+  font-size: 13px;
   color: var(--muted);
 }
+
+.bot-metric-value {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.bot-metric-value strong {
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  margin-right: 2px;
+}
+
+.bot-bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bot-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width .8s cubic-bezier(.2, .8, .2, 1);
+}
+
 
 
 /* くわしく */
