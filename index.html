@@ -24,7 +24,7 @@
     <section class="hero">
       <p class="eyebrow">SERVER & BOT STATUS</p>
       <h1 id="headline">正常に稼働中</h1>
-      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人の変態を監視しています。</p>
+      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人を監視しています。</p>
     </section>
 
     <section class="grid" aria-label="システムの状況">
@@ -78,61 +78,60 @@
         </svg>
       </article>
 
-      <!-- 4. Bot別 監視・利用者数 (柱状グラフ) -->
-      <article class="card full">
+      <!-- 4. まきぐもぼっと (1ボット単体・人数・サーバー数・Pingをいい感じに) -->
+      <article class="card full maki-card">
         <div class="card-head">
-          <h2>Bot別の規模 · 監視人数</h2>
-          <span class="sub">Real-time Bot Scale</span>
+          <div class="maki-head-left">
+            <h2>まきぐもぼっと</h2>
+            <span class="badge-public">一般公開中</span>
+          </div>
+          <a href="https://rds9.net/makigumo/" target="_blank" class="maki-link">公式Webサイト ↗</a>
         </div>
 
-        <div class="bot-bars">
-          <!-- まきぐもぼっと -->
-          <div class="bot-row">
-            <div class="bot-meta">
-              <div class="bot-name-wrap">
-                <span class="bot-title">まきぐもぼっと</span>
-                <span class="badge-public">一般公開中</span>
-              </div>
-              <span class="bot-val"><span id="bar-maki-users">—</span> <span class="unit">人監視中</span></span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill" id="bar-maki-fill" style="width: 100%;"></div>
-            </div>
-            <div class="bot-desc">
-              <span id="bar-maki-sub">46 サーバー · Ping — ms</span>
-              <a href="https://rds9.net/makigumo/" target="_blank" class="bot-link">公式Webサイト ↗</a>
+        <!-- 3大メトリクス（人数 · サーバー数 · Ping） -->
+        <div class="maki-metrics">
+          <div class="maki-metric-item">
+            <span class="maki-label">監視人数</span>
+            <div class="maki-val-wrap">
+              <span class="maki-val" id="maki-users">—</span>
+              <span class="maki-unit">人</span>
             </div>
           </div>
+          <div class="maki-metric-item">
+            <span class="maki-label">参加サーバー数</span>
+            <div class="maki-val-wrap">
+              <span class="maki-val" id="maki-guilds">—</span>
+              <span class="maki-unit">サーバー</span>
+            </div>
+          </div>
+          <div class="maki-metric-item">
+            <span class="maki-label">応答速度 (Ping)</span>
+            <div class="maki-val-wrap">
+              <span class="maki-val" id="maki-ping">—</span>
+              <span class="maki-unit">ms</span>
+            </div>
+          </div>
+        </div>
 
-          <!-- rds9 Team Bot -->
-          <div class="bot-row">
-            <div class="bot-meta">
-              <div class="bot-name-wrap">
-                <span class="bot-title">rds9 Team Bot</span>
-                <span class="badge-internal">運営専用</span>
-              </div>
-              <span class="bot-val" style="color: var(--accent-2);">公式コミュニティ運用中</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill purple" style="width: 25%;"></div>
-            </div>
-            <div class="bot-desc">
-              <span id="bar-teambot-sub">部署ロール自動化（開発 / 企画 / 広報）· チケット管理</span>
-              <span class="sub">Ping <span id="bar-teambot-ping">—</span> ms</span>
-            </div>
+        <!-- 柱状バー -->
+        <div class="maki-bar-wrap">
+          <div class="bar-track">
+            <div class="bar-fill" id="maki-bar-fill" style="width: 100%;"></div>
+          </div>
+          <div class="maki-bar-footer">
+            <span>監視変態数の規模 (Active)</span>
+            <span class="sub" id="maki-bar-desc">46 サーバーにて常時稼働中</span>
           </div>
         </div>
       </article>
 
-      <!-- 5. くわしく (お手本原本) -->
+      <!-- 5. くわしく (お手本原本と完全同一の4項目) -->
       <article class="card stats">
         <h2>くわしく</h2>
         <dl>
           <div><dt>ロードアベレージ</dt><dd id="load">—</dd></div>
           <div><dt>空きメモリ</dt><dd id="mem-free">—</dd></div>
           <div><dt>アプリの稼働時間</dt><dd id="proc-uptime">—</dd></div>
-          <div><dt>API Gateway</dt><dd id="gateway-status">api.rds9.net</dd></div>
-          <div><dt>まきぐも Ping</dt><dd id="maki-ping">—</dd></div>
           <div><dt>サーバー時刻</dt><dd id="time">—</dd></div>
         </dl>
       </article>
@@ -140,7 +139,7 @@
 
     <footer class="foot">
       <span>Powered by <a href="https://rds9.net">rds9team</a></span>
-      <span>pm2 で常駐中 · <a href="https://api.rds9.net/health" target="_blank">api.rds9.net/health</a> · <a href="https://api.rds9.net/api/status" target="_blank">/api/status</a></span>
+      <span>pm2 で常駐中 · <a href="http://vps-gateway.sorahost.net:62081/api/status" target="_blank">/api/status</a> · <a href="http://vps-gateway.sorahost.net:62081/healthz" target="_blank">/healthz</a></span>
     </footer>
   </main>
   <script src="./app.js" defer></script>
