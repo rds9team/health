@@ -28,33 +28,9 @@
     </section>
 
     <section class="grid" aria-label="システムの状況">
-      <!-- まきぐもぼっと (一般公開Bot) -->
+      <!-- 1. CPU (お手本原本) -->
       <article class="card gauge">
-        <div class="card-head">
-          <h2>まきぐもぼっと</h2>
-          <span class="badge-public">一般公開中</span>
-        </div>
-        <div class="ring" id="maki-ring" style="--value:100">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="track" cx="60" cy="60" r="52"></circle>
-            <circle class="bar" cx="60" cy="60" r="52" pathLength="100"></circle>
-          </svg>
-          <div class="ring-label">
-            <span class="num" id="maki-users">—</span>
-            <span class="unit">人</span>
-          </div>
-        </div>
-        <p class="sub" id="maki-sub">46 サーバー · Ping — ms</p>
-        <div class="card-link">
-          <a href="https://rds9.net/makigumo/" target="_blank">公式Webサイト ↗</a>
-        </div>
-      </article>
-
-      <!-- CPU -->
-      <article class="card gauge">
-        <div class="card-head">
-          <h2>CPU</h2>
-        </div>
+        <h2>CPU</h2>
         <div class="ring" id="cpu-ring" style="--value:0">
           <svg viewBox="0 0 120 120" aria-hidden="true">
             <circle class="track" cx="60" cy="60" r="52"></circle>
@@ -66,16 +42,11 @@
           </div>
         </div>
         <p class="sub" id="cpu-sub">8 コア</p>
-        <div class="card-link">
-          <span class="sub-label">Linode Tokyo Node</span>
-        </div>
       </article>
 
-      <!-- メモリ -->
+      <!-- 2. メモリ (お手本原本) -->
       <article class="card gauge">
-        <div class="card-head">
-          <h2>メモリ</h2>
-        </div>
+        <h2>メモリ</h2>
         <div class="ring" id="mem-ring" style="--value:0">
           <svg viewBox="0 0 120 120" aria-hidden="true">
             <circle class="track" cx="60" cy="60" r="52"></circle>
@@ -87,12 +58,9 @@
           </div>
         </div>
         <p class="sub" id="mem-sub">— / —</p>
-        <div class="card-link">
-          <span class="sub-label">RAM Usage</span>
-        </div>
       </article>
 
-      <!-- CPU の推移 (直近 2 分) -->
+      <!-- 3. CPU の推移 (お手本原本) -->
       <article class="card wide">
         <div class="card-head">
           <h2>CPU の推移</h2>
@@ -110,15 +78,61 @@
         </svg>
       </article>
 
-      <!-- くわしく -->
+      <!-- 4. Bot別 監視・利用者数 (柱状グラフ) -->
+      <article class="card full">
+        <div class="card-head">
+          <h2>Bot別の規模 · 監視人数</h2>
+          <span class="sub">Real-time Bot Scale</span>
+        </div>
+
+        <div class="bot-bars">
+          <!-- まきぐもぼっと -->
+          <div class="bot-row">
+            <div class="bot-meta">
+              <div class="bot-name-wrap">
+                <span class="bot-title">まきぐもぼっと</span>
+                <span class="badge-public">一般公開中</span>
+              </div>
+              <span class="bot-val"><span id="bar-maki-users">—</span> <span class="unit">人監視中</span></span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" id="bar-maki-fill" style="width: 100%;"></div>
+            </div>
+            <div class="bot-desc">
+              <span id="bar-maki-sub">46 サーバー · Ping — ms</span>
+              <a href="https://rds9.net/makigumo/" target="_blank" class="bot-link">公式Webサイト ↗</a>
+            </div>
+          </div>
+
+          <!-- rds9 Team Bot -->
+          <div class="bot-row">
+            <div class="bot-meta">
+              <div class="bot-name-wrap">
+                <span class="bot-title">rds9 Team Bot</span>
+                <span class="badge-internal">運営専用</span>
+              </div>
+              <span class="bot-val" style="color: var(--accent-2);">公式コミュニティ運用中</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill purple" style="width: 25%;"></div>
+            </div>
+            <div class="bot-desc">
+              <span id="bar-teambot-sub">部署ロール自動化（開発 / 企画 / 広報）· チケット管理</span>
+              <span class="sub">Ping <span id="bar-teambot-ping">—</span> ms</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. くわしく (お手本原本) -->
       <article class="card stats">
         <h2>くわしく</h2>
         <dl>
           <div><dt>ロードアベレージ</dt><dd id="load">—</dd></div>
           <div><dt>空きメモリ</dt><dd id="mem-free">—</dd></div>
-          <div><dt>まきぐも Discord Ping</dt><dd id="maki-ping">—</dd></div>
-          <div><dt>TeamBot 状態</dt><dd id="teambot-status">稼働中 (運営専用)</dd></div>
+          <div><dt>アプリの稼働時間</dt><dd id="proc-uptime">—</dd></div>
           <div><dt>API Gateway</dt><dd id="gateway-status">api.rds9.net</dd></div>
+          <div><dt>まきぐも Ping</dt><dd id="maki-ping">—</dd></div>
           <div><dt>サーバー時刻</dt><dd id="time">—</dd></div>
         </dl>
       </article>

@@ -94,20 +94,25 @@ function render(data) {
   // 2. Makigumo Bot Info
   const maki = data.services?.makigumo || {};
   const makiUsers = maki.users || maki.monitored_hentai || 1374;
-  $('maki-users').textContent = Number(makiUsers).toLocaleString();
-  $('maki-stat').textContent = Number(makiUsers).toLocaleString();
-
   const makiGuilds = maki.guilds || 46;
   const makiPing = maki.latency_ms !== undefined ? maki.latency_ms.toFixed(1) : '177.0';
-  $('maki-sub').textContent = `${makiGuilds} サーバー · Ping ${makiPing} ms`;
-  $('maki-ping').textContent = `${makiPing} ms`;
+
+  if ($('maki-stat')) $('maki-stat').textContent = Number(makiUsers).toLocaleString();
+  if ($('bar-maki-users')) $('bar-maki-users').textContent = Number(makiUsers).toLocaleString();
+  if ($('bar-maki-sub')) $('bar-maki-sub').textContent = `${makiGuilds} サーバー · Ping ${makiPing} ms`;
+  if ($('maki-ping')) $('maki-ping').textContent = `${makiPing} ms`;
 
   // 3. TeamBot
   const team = data.services?.rds9teambot;
   if (team && team.status === 'online') {
-    const teamPing = team.latency_ms ? ` (Ping ${team.latency_ms.toFixed(1)}ms)` : '';
-    $('teambot-status').textContent = `稼働中${teamPing}`;
+    const tPing = team.latency_ms !== undefined ? team.latency_ms.toFixed(1) : '178.0';
+    if ($('bar-teambot-ping')) $('bar-teambot-ping').textContent = tPing;
+    if ($('teambot-status')) $('teambot-status').textContent = `稼働中 (Ping ${tPing}ms)`;
   }
+
+  // App Uptime
+  const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
+  if ($('proc-uptime')) $('proc-uptime').textContent = formatDuration(procUp);
 
   // 4. Sparkline history
   history.push(cpuPercent);
