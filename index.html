@@ -1,525 +1,134 @@
-<!DOCTYPE html>
-<html lang="ja" class="dark">
+<!doctype html>
+<html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>rds9 Status — System Health</title>
-  <meta name="description" content="Real-time operational status and metrics for rds9 services, bots, and infrastructure.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>rds9 health — サービスの様子</title>
   <link rel="icon" href="https://rds9.net/index/favicon.ico" type="image/x-icon">
-
-  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              DEFAULT: '#10b981',
-              hover: '#059669',
-              glow: 'rgba(16, 185, 129, 0.25)',
-            },
-            accent: {
-              blue: '#38bdf8',
-              purple: '#a855f7',
-            },
-            bg: {
-              main: '#090a0c',
-              card: '#111214',
-              sub: '#16181d',
-            },
-            border: {
-              subtle: 'rgba(255, 255, 255, 0.08)',
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-            display: ['Space Grotesk', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body {
-      background-color: #090a0c;
-      color: #d6d3d1;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      overflow-x: hidden;
-    }
-
-    .ambient-glow {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(56, 189, 248, 0.03) 40%, transparent 70%);
-      filter: blur(80px);
-      pointer-events-none;
-      z-index: 0;
-    }
-
-    @keyframes dotBreath {
-      0%, 100% { opacity: 0.4; transform: scale(0.9); }
-      50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 10px #10b981; }
-    }
-    .brand-dot {
-      display: inline-block;
-      animation: dotBreath 2.4s ease-in-out infinite;
-    }
-
-    @keyframes subtlePulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.08); }
-    }
-    .pulse-dot {
-      animation: subtlePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
-    .status-card {
-      background-color: #111214;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .status-card:hover {
-      background-color: #14161a;
-      border-color: rgba(16, 185, 129, 0.35);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(16, 185, 129, 0.12);
-    }
-
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #090a0c; }
-    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-  </style>
+  <link rel="stylesheet" href="./app.css">
 </head>
-<body class="min-h-screen flex flex-col relative selection:bg-brand/30 selection:text-brand">
-
-  <!-- Ambient Glow -->
-  <div class="ambient-glow top-[-250px] left-1/2 -translate-x-1/2"></div>
-  <div class="ambient-glow bottom-[-200px] right-[-100px] opacity-40"></div>
-
-  <!-- Header -->
-  <header class="relative z-10 border-b border-border-subtle bg-bg-main/80 backdrop-blur-md sticky top-0">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <a href="https://rds9.net" class="flex items-center space-x-2 group">
-          <span class="font-display font-bold text-xl tracking-tight text-white group-hover:text-brand transition">
-            rds9<span class="text-brand brand-dot">.</span>health
-          </span>
-        </a>
-        <span class="text-xs px-2.5 py-0.5 rounded-full bg-stone-800/80 text-stone-400 font-mono border border-stone-700/50">
-          Live Status
-        </span>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"></span>
+        <span class="name">rds9 health</span>
       </div>
+      <div class="live" id="live" data-state="ok">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="live-text">稼働中</span>
+      </div>
+    </header>
 
-      <div class="flex items-center space-x-4">
-        <div class="hidden sm:flex items-center space-x-2 text-xs font-mono text-stone-400">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
-          </span>
-          <span id="poll-timer-label">Auto-refresh (10s)</span>
+    <section class="hero">
+      <p class="eyebrow">SYSTEM & BOT STATUS</p>
+      <h1 id="headline">正常に稼働中</h1>
+      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人を監視しています。</p>
+    </section>
+
+    <section class="grid" aria-label="サービスの状況">
+      <!-- まきぐもぼっと (一般公開Bot) -->
+      <article class="card gauge">
+        <div class="card-head w-full">
+          <h2>まきぐもぼっと</h2>
+          <span class="badge-public">一般公開中</span>
         </div>
-
-        <button id="refresh-btn" class="px-3 py-1.5 rounded-lg border border-stone-800 bg-bg-sub hover:bg-stone-800/80 hover:border-brand/40 text-stone-300 hover:text-white transition flex items-center space-x-1.5 text-xs font-mono">
-          <svg id="refresh-icon" class="w-3.5 h-3.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        <div class="ring" id="maki-ring" style="--value:100">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="52"></circle>
+            <circle class="bar" cx="60" cy="60" r="52" pathLength="100"></circle>
           </svg>
-          <span class="hidden md:inline">Refresh</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="flex-1 relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
-
-    <!-- Global Status Banner -->
-    <div id="overall-banner" class="mb-8 p-6 md:p-8 rounded-2xl border border-stone-800/80 bg-bg-card relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-      <div class="flex items-start md:items-center space-x-4">
-        <div id="overall-led" class="mt-1 md:mt-0 w-4 h-4 rounded-full bg-brand pulse-dot shadow-[0_0_12px_#10b981]"></div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <h1 id="overall-status-title" class="font-display font-bold text-2xl md:text-3xl text-white tracking-tight">
-              All Systems Operational
-            </h1>
-            <span class="hidden sm:inline-block px-2 py-0.5 rounded text-[11px] font-mono bg-brand/10 text-brand border border-brand/20">
-              HEALTHY
-            </span>
-          </div>
-          <p id="overall-status-desc" class="text-sm text-stone-400 mt-1 max-w-xl">
-            まきぐもぼっと、運営Bot、JSON API Gateway、VPSインフラが正常に稼働しています。
-          </p>
-        </div>
-      </div>
-
-      <div class="flex flex-col items-start md:items-end space-y-1 text-xs font-mono text-stone-400">
-        <div><span class="text-stone-500">API:</span> <a href="https://api.rds9.net" target="_blank" class="text-brand hover:underline">api.rds9.net</a></div>
-        <div><span class="text-stone-500">LAST CHECK:</span> <span id="last-updated" class="text-stone-200">Updating...</span></div>
-      </div>
-    </div>
-
-    <!-- KPI Summary Row (実データのみ) -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-      <!-- 監視人数（変態数） -->
-      <div class="status-card p-5 rounded-xl flex flex-col justify-between">
-        <div class="flex items-center justify-between text-xs font-mono text-stone-400 uppercase tracking-wider">
-          <span>変態監視人数</span>
-          <span class="text-brand">●</span>
-        </div>
-        <div class="mt-3">
-          <div id="kpi-users" class="font-display text-2xl md:text-3xl font-bold text-white tracking-tight">
-            1,374
-          </div>
-          <p class="text-xs text-stone-400 mt-1">まきぐも監視対象ユーザー</p>
-        </div>
-      </div>
-
-      <!-- 参加サーバー数 -->
-      <div class="status-card p-5 rounded-xl flex flex-col justify-between">
-        <div class="flex items-center justify-between text-xs font-mono text-stone-400 uppercase tracking-wider">
-          <span>参加サーバー</span>
-          <span class="text-accent-blue">●</span>
-        </div>
-        <div class="mt-3">
-          <div id="kpi-guilds" class="font-display text-2xl md:text-3xl font-bold text-white tracking-tight">
-            46
-          </div>
-          <p class="text-xs text-stone-400 mt-1">まきぐも導入サーバー数</p>
-        </div>
-      </div>
-
-      <!-- 平均レイテンシ -->
-      <div class="status-card p-5 rounded-xl flex flex-col justify-between">
-        <div class="flex items-center justify-between text-xs font-mono text-stone-400 uppercase tracking-wider">
-          <span>Discord Ping</span>
-          <span class="text-stone-400">⚡</span>
-        </div>
-        <div class="mt-3">
-          <div id="kpi-latency" class="font-mono text-2xl md:text-3xl font-bold text-white tracking-tight">
-            177 <span class="text-sm font-normal text-stone-400">ms</span>
-          </div>
-          <p class="text-xs text-stone-400 mt-1">WebSocket Gateway</p>
-        </div>
-      </div>
-
-      <!-- 稼働サービス数 -->
-      <div class="status-card p-5 rounded-xl flex flex-col justify-between">
-        <div class="flex items-center justify-between text-xs font-mono text-stone-400 uppercase tracking-wider">
-          <span>稼働サービス</span>
-          <span class="text-brand">✓</span>
-        </div>
-        <div class="mt-3">
-          <div id="kpi-services" class="font-display text-2xl md:text-3xl font-bold text-white tracking-tight">
-            3 / 3
-          </div>
-          <p class="text-xs text-stone-400 mt-1">100% Operational</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active Services (実在する稼働サービスのみ) -->
-    <div class="mb-10">
-      <div class="flex items-center justify-between mb-4 border-b border-border-subtle pb-3">
-        <h2 class="font-display font-bold text-lg text-white tracking-tight flex items-center space-x-2">
-          <span class="text-brand">#</span>
-          <span>Active Services & Infrastructure</span>
-        </h2>
-        <span class="text-xs font-mono text-stone-500">LIVE METRICS</span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-        <!-- 1. まきぐもぼっと（唯一の一般公開Bot） -->
-        <div class="status-card p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div>
-            <div class="flex items-start justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center font-display font-bold text-brand text-lg">
-                  ま
-                </div>
-                <div>
-                  <div class="flex items-center space-x-2">
-                    <h3 class="font-display font-bold text-lg text-white">まきぐもぼっと</h3>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-brand/10 text-brand border border-brand/20">一般公開中</span>
-                  </div>
-                  <p class="text-xs font-mono text-stone-400">Security & AI Persona</p>
-                </div>
-              </div>
-              <span id="maki-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-brand/10 text-brand border border-brand/20">
-                ONLINE
-              </span>
-            </div>
-
-            <!-- Stats -->
-            <div class="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-border-subtle text-xs">
-              <div>
-                <span class="text-stone-400 font-mono block">監視変態数</span>
-                <span id="maki-users" class="font-mono text-base font-semibold text-white">1,374 人</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">参加サーバー</span>
-                <span id="maki-guilds" class="font-mono text-base font-semibold text-white">46 サーバー</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">応答速度 (Ping)</span>
-                <span id="maki-ping" class="font-mono text-base font-semibold text-stone-200">177.0 ms</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">稼働時間 (Uptime)</span>
-                <span id="maki-uptime" class="font-mono text-base font-semibold text-stone-200">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between text-xs">
-            <span class="text-stone-400 font-mono">v4.1 • Web体験API搭載</span>
-            <a href="https://rds9.net/makigumo/" target="_blank" class="text-stone-400 hover:text-brand transition flex items-center space-x-1 font-mono">
-              <span>Webサイト</span>
-              <span>&rarr;</span>
-            </a>
+          <div class="ring-label">
+            <span class="num" id="maki-users">—</span>
+            <span class="unit">人監視</span>
           </div>
         </div>
+        <p class="sub" id="maki-sub">46 サーバー · Ping — ms</p>
+        <div class="card-link">
+          <a href="https://rds9.net/makigumo/" target="_blank">公式Webサイト ↗</a>
+        </div>
+      </article>
 
-        <!-- 2. rds9 Team Bot (運営・管理用) -->
-        <div class="status-card p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div>
-            <div class="flex items-start justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-accent-blue/10 border border-accent-blue/20 flex items-center justify-center font-display font-bold text-accent-blue text-sm">
-                  R9
-                </div>
-                <div>
-                  <div class="flex items-center space-x-2">
-                    <h3 class="font-display font-bold text-lg text-white">rds9 Team Bot</h3>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-stone-800 text-stone-400 border border-stone-700/50">運営専用</span>
-                  </div>
-                  <p class="text-xs font-mono text-stone-400">Operations & Dept Automation</p>
-                </div>
-              </div>
-              <span id="teambot-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-brand/10 text-brand border border-brand/20">
-                ONLINE
-              </span>
-            </div>
-
-            <!-- Stats -->
-            <div class="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-border-subtle text-xs">
-              <div>
-                <span class="text-stone-400 font-mono block">管理コミュニティ</span>
-                <span class="font-mono text-base font-semibold text-white">公式サーバー</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">部署ロール自動化</span>
-                <span class="font-mono text-xs font-medium text-emerald-400">開発 / 企画 / 広報</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">応答速度 (Ping)</span>
-                <span id="teambot-ping" class="font-mono text-base font-semibold text-stone-200">178.0 ms</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">稼働時間 (Uptime)</span>
-                <span id="teambot-uptime" class="font-mono text-base font-semibold text-stone-200">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between text-xs font-mono">
-            <span class="text-stone-400">Ticket & Webhook Handler</span>
-            <span class="text-stone-500">Internal Hub</span>
+      <!-- CPU -->
+      <article class="card gauge">
+        <div class="card-head w-full">
+          <h2>CPU</h2>
+        </div>
+        <div class="ring" id="cpu-ring" style="--value:0">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="52"></circle>
+            <circle class="bar" cx="60" cy="60" r="52" pathLength="100"></circle>
+          </svg>
+          <div class="ring-label">
+            <span class="num" id="cpu">0</span>
+            <span class="unit">%</span>
           </div>
         </div>
+        <p class="sub" id="cpu-sub">8 コア</p>
+        <div class="card-link">
+          <span class="sub-label">Linode Tokyo Node</span>
+        </div>
+      </article>
 
-        <!-- 3. JSON API Gateway (api.rds9.net) -->
-        <div class="status-card p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div>
-            <div class="flex items-start justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center font-display font-bold text-purple-400 text-sm">
-                  API
-                </div>
-                <div>
-                  <h3 class="font-display font-bold text-lg text-white">JSON API Gateway</h3>
-                  <p class="text-xs font-mono text-stone-400">https://api.rds9.net</p>
-                </div>
-              </div>
-              <span id="gateway-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-brand/10 text-brand border border-brand/20">
-                OPERATIONAL
-              </span>
-            </div>
-
-            <!-- Stats -->
-            <div class="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-border-subtle text-xs">
-              <div>
-                <span class="text-stone-400 font-mono block">集約レイテンシ</span>
-                <span id="gateway-latency" class="font-mono text-base font-semibold text-purple-300">4.5 ms</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">CORS ポリシー</span>
-                <span class="font-mono text-base font-semibold text-white">Enabled (*)</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">データ形式</span>
-                <span class="font-mono text-base font-semibold text-stone-200">Pure JSON (REST)</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">Cloudflare Tunnel</span>
-                <span class="font-mono text-base font-semibold text-emerald-400">QUIC (kix)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between text-xs font-mono">
-            <span class="text-stone-400">REST Endpoints</span>
-            <a href="#api-reference" class="text-stone-400 hover:text-purple-400 transition">&darr; API Spec</a>
+      <!-- メモリ -->
+      <article class="card gauge">
+        <div class="card-head w-full">
+          <h2>メモリ</h2>
+        </div>
+        <div class="ring" id="mem-ring" style="--value:0">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="52"></circle>
+            <circle class="bar" cx="60" cy="60" r="52" pathLength="100"></circle>
+          </svg>
+          <div class="ring-label">
+            <span class="num" id="mem">0</span>
+            <span class="unit">%</span>
           </div>
         </div>
-
-        <!-- 4. VPS Host Infrastructure -->
-        <div class="status-card p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div>
-            <div class="flex items-start justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-stone-800 border border-stone-700/50 flex items-center justify-center font-display font-bold text-stone-300 text-sm">
-                  VPS
-                </div>
-                <div>
-                  <h3 class="font-display font-bold text-lg text-white">Host Infrastructure</h3>
-                  <p class="text-xs font-mono text-stone-400">Linode JP (Tokyo Node)</p>
-                </div>
-              </div>
-              <span id="vps-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-brand/10 text-brand border border-brand/20">
-                NORMAL
-              </span>
-            </div>
-
-            <!-- Stats -->
-            <div class="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-border-subtle text-xs">
-              <div>
-                <span class="text-stone-400 font-mono block">CPU 使用率</span>
-                <span id="vps-cpu" class="font-mono text-base font-semibold text-white">0.0 %</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">メモリ使用率</span>
-                <span id="vps-mem" class="font-mono text-base font-semibold text-white">10.6 % (841MB)</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">CPU コア</span>
-                <span id="vps-cores" class="font-mono text-base font-semibold text-stone-200">8 vCPUs</span>
-              </div>
-              <div>
-                <span class="text-stone-400 font-mono block">ホスト稼働時間</span>
-                <span id="vps-uptime" class="font-mono text-base font-semibold text-stone-200">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between text-xs font-mono">
-            <span class="text-stone-400">Ubuntu 24.04 LTS • PM2</span>
-            <span class="text-stone-400" id="vps-load">Load: —</span>
-          </div>
+        <p class="sub" id="mem-sub">— / —</p>
+        <div class="card-link">
+          <span class="sub-label">RAM Usage</span>
         </div>
+      </article>
 
-      </div>
-    </div>
-
-    <!-- API Reference Section -->
-    <div id="api-reference" class="status-card p-6 md:p-8 rounded-2xl mb-12">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="font-display font-bold text-xl text-white tracking-tight flex items-center space-x-2">
-            <span class="text-brand">#</span>
-            <span>API Endpoints Reference</span>
-          </h2>
-          <p class="text-xs md:text-sm text-stone-400 mt-1">
-            利用者がプログラムやフロントエンドから直接呼び出せる JSON API 一覧
-          </p>
+      <!-- CPU の推移 (直近 2 分) -->
+      <article class="card wide">
+        <div class="card-head">
+          <h2>CPU の推移</h2>
+          <span class="sub">直近 2 分</span>
         </div>
-        <span class="px-2.5 py-1 rounded bg-stone-800 text-stone-300 font-mono text-xs border border-stone-700/50">
-          Base: https://api.rds9.net
-        </span>
-      </div>
+        <svg class="spark" id="spark" viewBox="0 0 600 140" preserveAspectRatio="none" role="img" aria-label="CPU 使用率の推移">
+          <defs>
+            <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="var(--accent)" stop-opacity=".35"></stop>
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <path id="spark-area" fill="url(#fill)"></path>
+          <path id="spark-line" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"></path>
+        </svg>
+      </article>
 
-      <div class="space-y-3 font-mono text-xs">
-        <div class="p-3 rounded-lg bg-bg-sub border border-stone-800/80 flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div class="flex items-center space-x-3">
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">GET</span>
-            <span class="text-white font-semibold">/health</span>
-            <span class="text-stone-400 text-xs hidden sm:inline">— 全サービス統合リアルタイムヘルス＆メトリクス</span>
-          </div>
-          <button onclick="copySnippet('https://api.rds9.net/health')" class="text-stone-400 hover:text-white transition px-2 py-1 rounded hover:bg-stone-800 self-start md:self-auto">
-            Copy URL
-          </button>
-        </div>
+      <!-- くわしく -->
+      <article class="card stats">
+        <h2>くわしく</h2>
+        <dl>
+          <div><dt>ロードアベレージ</dt><dd id="load">—</dd></div>
+          <div><dt>空きメモリ</dt><dd id="mem-free">—</dd></div>
+          <div><dt>まきぐも Discord Ping</dt><dd id="maki-ping">—</dd></div>
+          <div><dt>TeamBot 状態</dt><dd id="teambot-status">稼働中 (運営専用)</dd></div>
+          <div><dt>API Gateway</dt><dd id="gateway-status">api.rds9.net</dd></div>
+          <div><dt>サーバー時刻</dt><dd id="time">—</dd></div>
+        </dl>
+      </article>
+    </section>
 
-        <div class="p-3 rounded-lg bg-bg-sub border border-stone-800/80 flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div class="flex items-center space-x-3">
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">GET</span>
-            <span class="text-white font-semibold">/makigumo/stats</span>
-            <span class="text-stone-400 text-xs hidden sm:inline">— まきぐもボットの監視変態数・ギルド数・Ping</span>
-          </div>
-          <button onclick="copySnippet('https://api.rds9.net/makigumo/stats')" class="text-stone-400 hover:text-white transition px-2 py-1 rounded hover:bg-stone-800 self-start md:self-auto">
-            Copy URL
-          </button>
-        </div>
-
-        <div class="p-3 rounded-lg bg-bg-sub border border-stone-800/80 flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div class="flex items-center space-x-3">
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">GET</span>
-            <span class="text-white font-semibold">/teambot/health</span>
-            <span class="text-stone-400 text-xs hidden sm:inline">— rds9 Team Bot の稼働状態</span>
-          </div>
-          <button onclick="copySnippet('https://api.rds9.net/teambot/health')" class="text-stone-400 hover:text-white transition px-2 py-1 rounded hover:bg-stone-800 self-start md:self-auto">
-            Copy URL
-          </button>
-        </div>
-
-        <div class="p-3 rounded-lg bg-bg-sub border border-stone-800/80 flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div class="flex items-center space-x-3">
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">GET</span>
-            <span class="text-white font-semibold">/api/status</span>
-            <span class="text-stone-400 text-xs hidden sm:inline">— VPSホストリソース（CPU・RAM・Uptime）</span>
-          </div>
-          <button onclick="copySnippet('https://api.rds9.net/api/status')" class="text-stone-400 hover:text-white transition px-2 py-1 rounded hover:bg-stone-800 self-start md:self-auto">
-            Copy URL
-          </button>
-        </div>
-
-        <div class="p-3 rounded-lg bg-bg-sub border border-stone-800/80 flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div class="flex items-center space-x-3">
-            <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 font-bold border border-purple-500/20">POST</span>
-            <span class="text-white font-semibold">/makigumo/trial</span>
-            <span class="text-stone-400 text-xs hidden sm:inline">— まきぐもWeb AI体験チャット</span>
-          </div>
-          <button onclick="copySnippet('https://api.rds9.net/makigumo/trial')" class="text-stone-400 hover:text-white transition px-2 py-1 rounded hover:bg-stone-800 self-start md:self-auto">
-            Copy URL
-          </button>
-        </div>
-      </div>
-    </div>
-
+    <footer class="foot">
+      <span>Powered by <a href="https://rds9.net">rds9team</a></span>
+      <span>pm2 で常駐中 · <a href="https://api.rds9.net/health" target="_blank">api.rds9.net/health</a> · <a href="https://api.rds9.net/api/status" target="_blank">/api/status</a></span>
+    </footer>
   </main>
-
-  <!-- Footer -->
-  <footer class="relative z-10 border-t border-border-subtle bg-bg-main py-6 text-center text-xs font-mono text-stone-400">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center space-x-2">
-        <span>Powered by</span>
-        <a href="https://rds9.net" class="text-stone-300 hover:text-brand font-semibold transition">rds9team</a>
-      </div>
-      <div>
-        <span>Status Dashboard • Hosted on Cloudflare Pages</span>
-      </div>
-    </div>
-  </footer>
-
-  <script src="./app.js"></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
