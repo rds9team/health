@@ -78,38 +78,40 @@
         </svg>
       </article>
 
-      <!-- 4. まきぐもぼっと (1ボット単体・余計な文字や推測のないシンプルな柱状バー表示) -->
-      <article class="card full">
+      <!-- 4. まきぐもぼっと (スタッツ + Pingのリアルタイム推移グラフ) -->
+      <article class="card full maki-card">
         <div class="card-head">
           <h2>まきぐもぼっと</h2>
+          <span class="sub" id="maki-ping-badge">Ping: 174.4 ms</span>
         </div>
-        <div class="bot-metrics">
-          <div class="bot-metric">
-            <div class="bot-metric-info">
-              <span class="bot-metric-label">ユーザー数</span>
-              <span class="bot-metric-value" id="maki-users"><strong>1,373</strong> 人</span>
+        <div class="maki-grid">
+          <!-- スタッツ (ユーザー数 & 参加サーバー) -->
+          <div class="maki-stats">
+            <div class="maki-stat-item">
+              <span class="label">ユーザー数</span>
+              <span class="val" id="maki-users"><strong>1,373</strong> 人</span>
             </div>
-            <div class="bot-bar-track">
-              <div class="bot-bar-fill" id="bar-users" style="width: 70%;"></div>
-            </div>
-          </div>
-          <div class="bot-metric">
-            <div class="bot-metric-info">
-              <span class="bot-metric-label">参加サーバー</span>
-              <span class="bot-metric-value" id="maki-guilds"><strong>46</strong> サーバー</span>
-            </div>
-            <div class="bot-bar-track">
-              <div class="bot-bar-fill" id="bar-guilds" style="width: 46%;"></div>
+            <div class="maki-stat-item">
+              <span class="label">参加サーバー</span>
+              <span class="val" id="maki-guilds"><strong>46</strong> サーバー</span>
             </div>
           </div>
-          <div class="bot-metric">
-            <div class="bot-metric-info">
-              <span class="bot-metric-label">Ping</span>
-              <span class="bot-metric-value" id="maki-ping"><strong>174.8</strong> ms</span>
+          <!-- Ping の推移グラフ -->
+          <div class="maki-spark-wrap">
+            <div class="maki-spark-head">
+              <span class="label">Ping の推移</span>
+              <span class="sub">直近 2 分</span>
             </div>
-            <div class="bot-bar-track">
-              <div class="bot-bar-fill" id="bar-ping" style="width: 35%;"></div>
-            </div>
+            <svg class="spark spark-maki" id="spark-maki" viewBox="0 0 600 120" preserveAspectRatio="none" role="img" aria-label="まきぐもぼっと Ping の推移">
+              <defs>
+                <linearGradient id="fill-maki" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="var(--accent)" stop-opacity=".3"></stop>
+                  <stop offset="1" stop-color="var(--accent)" stop-opacity="0"></stop>
+                </linearGradient>
+              </defs>
+              <path id="spark-maki-area" fill="url(#fill-maki)"></path>
+              <path id="spark-maki-line" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"></path>
+            </svg>
           </div>
         </div>
       </article>

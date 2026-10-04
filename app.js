@@ -93,6 +93,36 @@ function drawSpark() {
   if (sparkArea) sparkArea.setAttribute('d', `${line} L${W},${H} L${firstX},${H} Z`);
 }
 
+const PING_HISTORY = 40; // 3秒 × 40 = 直近 2分
+const pingHistory = [174.5, 175.2, 174.0, 176.1, 174.8, 175.0];
+
+function drawMakiSpark() {
+  const W = 600;
+  const H = 120;
+  const PAD = 8;
+  if (pingHistory.length < 2) return;
+
+  const minVal = Math.max(0, Math.min(...pingHistory) - 15);
+  const maxVal = Math.max(minVal + 30, Math.max(...pingHistory) + 15);
+  const range = maxVal - minVal;
+
+  const step = W / (PING_HISTORY - 1);
+  const offset = PING_HISTORY - pingHistory.length;
+  const points = pingHistory.map((v, i) => {
+    const x = (offset + i) * step;
+    const normalized = (v - minVal) / range;
+    const y = H - PAD - normalized * (H - PAD * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+
+  const line = `M${points.join(' L')}`;
+  const firstX = (offset * step).toFixed(1);
+  const sparkLine = $('spark-maki-line');
+  const sparkArea = $('spark-maki-area');
+  if (sparkLine) sparkLine.setAttribute('d', line);
+  if (sparkArea) sparkArea.setAttribute('d', `${line} L${W},${H} L${firstX},${H} Z`);
+}
+
 function renderServer(d) {
   if (!d) return;
 
@@ -128,24 +158,16 @@ function renderMaki(m) {
   if (!m) return;
   const users = m.users || 1373;
   const guilds = m.guilds || 46;
-  const ping = m.ping !== undefined ? Number(m.ping).toFixed(1) : '182.9';
+  const ping = m.ping !== undefined ? Number(m.ping).toFixed(1) : '174.4';
 
   if ($('maki-users')) $('maki-users').innerHTML = `<strong>${Number(users).toLocaleString()}</strong> 人`;
   if ($('maki-guilds')) $('maki-guilds').innerHTML = `<strong>${Number(guilds).toLocaleString()}</strong> サーバー`;
-  if ($('maki-ping')) $('maki-ping').innerHTML = `<strong>${ping}</strong> ms`;
+  if ($('maki-ping-badge')) $('maki-ping-badge').textContent = `Ping: ${ping} ms`;
 
-  if ($('bar-users')) {
-    const userPct = Math.min(100, Math.max(10, (users / 2000) * 100));
-    $('bar-users').style.width = `${userPct.toFixed(0)}%`;
-  }
-  if ($('bar-guilds')) {
-    const guildPct = Math.min(100, Math.max(10, (guilds / 100) * 100));
-    $('bar-guilds').style.width = `${guildPct.toFixed(0)}%`;
-  }
-  if ($('bar-ping')) {
-    const pingPct = Math.min(100, Math.max(10, (Number(ping) / 400) * 100));
-    $('bar-ping').style.width = `${pingPct.toFixed(0)}%`;
-  }
+  // Ping推移履歴の更新と描画
+  pingHistory.push(Number(ping));
+  if (pingHistory.length > PING_HISTORY) pingHistory.shift();
+  drawMakiSpark();
 }
 
 function setLive(state, text, headline) {
