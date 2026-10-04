@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>rds9 health — システムの様子</title>
   <link rel="icon" href="https://rds9.net/index/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./app.css">
+  <link rel="stylesheet" href="./app.css?v=20261004">
 </head>
 <body>
   <main class="shell">
@@ -87,7 +87,7 @@
           <div class="bot-metric">
             <div class="bot-metric-info">
               <span class="bot-metric-label">ユーザー数</span>
-              <span class="bot-metric-value"><strong id="maki-users">—</strong> 人</span>
+              <span class="bot-metric-value" id="maki-users"><strong>1,373</strong> 人</span>
             </div>
             <div class="bot-bar-track">
               <div class="bot-bar-fill" id="bar-users" style="width: 70%;"></div>
@@ -96,7 +96,7 @@
           <div class="bot-metric">
             <div class="bot-metric-info">
               <span class="bot-metric-label">参加サーバー</span>
-              <span class="bot-metric-value"><strong id="maki-guilds">—</strong> サーバー</span>
+              <span class="bot-metric-value" id="maki-guilds"><strong>46</strong> サーバー</span>
             </div>
             <div class="bot-bar-track">
               <div class="bot-bar-fill" id="bar-guilds" style="width: 46%;"></div>
@@ -105,7 +105,7 @@
           <div class="bot-metric">
             <div class="bot-metric-info">
               <span class="bot-metric-label">Ping</span>
-              <span class="bot-metric-value"><strong id="maki-ping">—</strong> ms</span>
+              <span class="bot-metric-value" id="maki-ping"><strong>174.8</strong> ms</span>
             </div>
             <div class="bot-bar-track">
               <div class="bot-bar-fill" id="bar-ping" style="width: 35%;"></div>
@@ -131,6 +131,6 @@
       <span>pm2 で常駐中 · <a href="http://vps-gateway.sorahost.net:62081/api/status" target="_blank">/api/status</a> · <a href="http://vps-gateway.sorahost.net:62081/healthz" target="_blank">/healthz</a></span>
     </footer>
   </main>
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=20261004" defer></script>
 </body>
 </html>

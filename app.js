@@ -130,9 +130,9 @@ function renderMaki(m) {
   const guilds = m.guilds || 46;
   const ping = m.ping !== undefined ? Number(m.ping).toFixed(1) : '182.9';
 
-  if ($('maki-users')) $('maki-users').textContent = Number(users).toLocaleString();
-  if ($('maki-guilds')) $('maki-guilds').textContent = Number(guilds).toLocaleString();
-  if ($('maki-ping')) $('maki-ping').textContent = ping;
+  if ($('maki-users')) $('maki-users').innerHTML = `<strong>${Number(users).toLocaleString()}</strong> 人`;
+  if ($('maki-guilds')) $('maki-guilds').innerHTML = `<strong>${Number(guilds).toLocaleString()}</strong> サーバー`;
+  if ($('maki-ping')) $('maki-ping').innerHTML = `<strong>${ping}</strong> ms`;
 
   if ($('bar-users')) {
     const userPct = Math.min(100, Math.max(10, (users / 2000) * 100));
