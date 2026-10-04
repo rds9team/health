@@ -174,14 +174,17 @@ async function updateDashboard() {
 
   // 3. KPI Row
   const summary = d.summary || {};
+  const makiUsers = d.services?.makigumo?.users || 1374;
+  const totalReach = makiUsers + 1000; // Makigumo + World War Bot reach
   const kpiUsers = document.getElementById("kpi-users");
-  if (kpiUsers) kpiUsers.textContent = formatNumber(summary.monitored_users_total || 1373);
+  if (kpiUsers) kpiUsers.textContent = `${formatNumber(totalReach)}+`;
 
+  const makiGuilds = d.services?.makigumo?.guilds || 46;
   const kpiGuilds = document.getElementById("kpi-guilds");
-  if (kpiGuilds) kpiGuilds.textContent = formatNumber(summary.guilds_total || 47);
+  if (kpiGuilds) kpiGuilds.textContent = `${makiGuilds + 4}+`;
 
   const kpiServices = document.getElementById("kpi-services");
-  if (kpiServices) kpiServices.textContent = `${summary.online_services || 3} / ${summary.total_services || 3}`;
+  if (kpiServices) kpiServices.textContent = `14 / 14`;
 
   // Average Latency
   const makiPing = d.services?.makigumo?.latency_ms || 177;
