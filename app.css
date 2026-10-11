@@ -250,84 +250,77 @@ h1 {
   margin-top: 12px;
 }
 
-/* まきぐもぼっと (スタッツ + Ping推移スパークライン) */
-.maki-card {
+/* 柱状グラフ（Bot別 人数バー） */
+.bot-bars {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.maki-grid {
-  display: grid;
-  grid-template-columns: 1fr;
   gap: 20px;
-  align-items: center;
+  margin-top: 18px;
 }
-
-@media (min-width: 680px) {
-  .maki-grid {
-    grid-template-columns: 210px 1fr;
-    gap: 32px;
-  }
-}
-
-.maki-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.maki-stat-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.maki-stat-item .label {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.maki-stat-item .val {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.maki-stat-item .val strong {
-  font-family: var(--mono);
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-  margin-right: 3px;
-  line-height: 1.1;
-}
-
-.maki-spark-wrap {
+.bot-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 0;
 }
-
-.maki-spark-head {
+.bot-meta {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-
-.maki-spark-head .label {
+.bot-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bot-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.bot-val {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.bar-track {
+  width: 100%;
+  height: 10px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bar-fill.purple {
+  background: var(--accent-2);
+}
+.bar-fill.blue {
+  background: #3b82f6;
+}
+.bot-desc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 12px;
   color: var(--muted);
 }
-
-.spark-maki {
-  height: 110px;
-  margin-top: 4px;
+.bot-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
 }
-
-
-
+.bot-link:hover {
+  text-decoration: underline;
+}
 
 /* くわしく */
 .stats dl {

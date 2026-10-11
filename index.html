@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>rds9 health — システムの様子</title>
   <link rel="icon" href="https://rds9.net/index/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./app.css?v=20261004">
+  <link rel="stylesheet" href="./app.css">
 </head>
 <body>
   <main class="shell">
@@ -22,9 +22,9 @@
     </header>
 
     <section class="hero">
-      <p class="eyebrow">SERVER STATUS</p>
+      <p class="eyebrow">SERVER & BOT STATUS</p>
       <h1 id="headline">正常に稼働中</h1>
-      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けています。</p>
+      <p class="lede">このサーバーは <strong id="uptime">—</strong> 動き続けており、まきぐもぼっとは <strong id="maki-stat">—</strong> 人の変態を監視しています。</p>
     </section>
 
     <section class="grid" aria-label="システムの状況">
@@ -78,51 +78,79 @@
         </svg>
       </article>
 
-      <!-- 4. まきぐもぼっと (スタッツ + Pingのリアルタイム推移グラフ) -->
-      <article class="card full maki-card">
+      <!-- 4. Bot別 監視・利用者数 (柱状グラフ) -->
+      <article class="card full">
         <div class="card-head">
-          <h2>まきぐもぼっと</h2>
-          <span class="sub" id="maki-ping-badge">Ping: 174.4 ms</span>
+          <h2>Bot別の規模 · 監視人数</h2>
+          <span class="sub">Real-time Bot Scale</span>
         </div>
-        <div class="maki-grid">
-          <!-- スタッツ (ユーザー数 & 参加サーバー) -->
-          <div class="maki-stats">
-            <div class="maki-stat-item">
-              <span class="label">ユーザー数</span>
-              <span class="val" id="maki-users"><strong>1,373</strong> 人</span>
+
+        <div class="bot-bars">
+          <!-- まきぐもぼっと -->
+          <div class="bot-row">
+            <div class="bot-meta">
+              <div class="bot-name-wrap">
+                <span class="bot-title">まきぐもぼっと</span>
+                <span class="badge-public">一般公開中</span>
+              </div>
+              <span class="bot-val"><span id="bar-maki-users">—</span> <span class="unit">人監視中</span></span>
             </div>
-            <div class="maki-stat-item">
-              <span class="label">参加サーバー</span>
-              <span class="val" id="maki-guilds"><strong>46</strong> サーバー</span>
+            <div class="bar-track">
+              <div class="bar-fill" id="bar-maki-fill" style="width: 100%;"></div>
+            </div>
+            <div class="bot-desc">
+              <span id="bar-maki-sub">46 サーバー · Ping — ms</span>
+              <a href="https://rds9.net/makigumo/" target="_blank" class="bot-link">公式Webサイト ↗</a>
             </div>
           </div>
-          <!-- Ping の推移グラフ -->
-          <div class="maki-spark-wrap">
-            <div class="maki-spark-head">
-              <span class="label">Ping の推移</span>
-              <span class="sub">直近 2 分</span>
+
+          <!-- 全世界戦争Bot (World War Bot) -->
+          <div class="bot-row">
+            <div class="bot-meta">
+              <div class="bot-name-wrap">
+                <span class="bot-title">全世界戦争Bot</span>
+                <span class="badge-public">一般公開中</span>
+              </div>
+              <span class="bot-val"><span id="bar-war-users">1,333</span> <span class="unit">人参戦中</span></span>
             </div>
-            <svg class="spark spark-maki" id="spark-maki" viewBox="0 0 600 120" preserveAspectRatio="none" role="img" aria-label="まきぐもぼっと Ping の推移">
-              <defs>
-                <linearGradient id="fill-maki" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="var(--accent)" stop-opacity=".3"></stop>
-                  <stop offset="1" stop-color="var(--accent)" stop-opacity="0"></stop>
-                </linearGradient>
-              </defs>
-              <path id="spark-maki-area" fill="url(#fill-maki)"></path>
-              <path id="spark-maki-line" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"></path>
-            </svg>
+            <div class="bar-track">
+              <div class="bar-fill blue" id="bar-war-fill" style="width: 95%;"></div>
+            </div>
+            <div class="bot-desc">
+              <span id="bar-war-sub">27 サーバー · Ping <span id="bar-war-ping">—</span> ms</span>
+              <a href="https://rds9.net/war/" target="_blank" class="bot-link">公式Webサイト ↗</a>
+            </div>
+          </div>
+
+          <!-- rds9 Team Bot -->
+          <div class="bot-row">
+            <div class="bot-meta">
+              <div class="bot-name-wrap">
+                <span class="bot-title">rds9 Team Bot</span>
+                <span class="badge-internal">運営専用</span>
+              </div>
+              <span class="bot-val" style="color: var(--accent-2);">公式コミュニティ運用中</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill purple" style="width: 25%;"></div>
+            </div>
+            <div class="bot-desc">
+              <span id="bar-teambot-sub">部署ロール自動化（開発 / 企画 / 広報）· チケット管理</span>
+              <span class="sub">Ping <span id="bar-teambot-ping">—</span> ms</span>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- 5. くわしく (お手本原本と完全同一の4項目) -->
+      <!-- 5. くわしく (お手本原本) -->
       <article class="card stats">
         <h2>くわしく</h2>
         <dl>
           <div><dt>ロードアベレージ</dt><dd id="load">—</dd></div>
           <div><dt>空きメモリ</dt><dd id="mem-free">—</dd></div>
           <div><dt>アプリの稼働時間</dt><dd id="proc-uptime">—</dd></div>
+          <div><dt>API Gateway</dt><dd id="gateway-status">api.rds9.net</dd></div>
+          <div><dt>まきぐも Ping</dt><dd id="maki-ping">—</dd></div>
           <div><dt>サーバー時刻</dt><dd id="time">—</dd></div>
         </dl>
       </article>
@@ -130,9 +158,9 @@
 
     <footer class="foot">
       <span>Powered by <a href="https://rds9.net">rds9team</a></span>
-      <span>pm2 で常駐中 · <a href="http://vps-gateway.sorahost.net:62081/api/status" target="_blank">/api/status</a> · <a href="http://vps-gateway.sorahost.net:62081/healthz" target="_blank">/healthz</a></span>
+      <span>pm2 で常駐中 · <a href="https://api.rds9.net/health" target="_blank">api.rds9.net/health</a> · <a href="https://api.rds9.net/api/status" target="_blank">/api/status</a></span>
     </footer>
   </main>
-  <script src="./app.js?v=20261004" defer></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
