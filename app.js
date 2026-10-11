@@ -130,8 +130,9 @@ function render(data) {
   const makiPing = maki.latency_ms !== undefined ? maki.latency_ms.toFixed(1) : '183.2';
 
   if ($('maki-stat')) $('maki-stat').textContent = Number(makiUsers).toLocaleString();
-  if ($('bar-maki-users')) $('bar-maki-users').textContent = Number(makiUsers).toLocaleString();
-  if ($('bar-maki-sub')) $('bar-maki-sub').textContent = `${makiGuilds} サーバー · Ping ${makiPing} ms`;
+  if ($('bot-maki-users')) $('bot-maki-users').textContent = Number(makiUsers).toLocaleString();
+  if ($('bot-maki-guilds')) $('bot-maki-guilds').textContent = makiGuilds;
+  if ($('bot-maki-ping')) $('bot-maki-ping').textContent = makiPing;
   if ($('maki-ping')) $('maki-ping').textContent = `${makiPing} ms`;
 
   // World War Bot
@@ -139,19 +140,15 @@ function render(data) {
   const warUsers = war.users || 1333;
   const warGuilds = war.guilds || 27;
   const warPing = war.latency_ms !== undefined ? war.latency_ms.toFixed(1) : '175.0';
-  if ($('bar-war-users')) $('bar-war-users').textContent = Number(warUsers).toLocaleString();
-  if ($('bar-war-ping')) $('bar-war-ping').textContent = warPing;
-  if ($('bar-war-sub')) $('bar-war-sub').textContent = `${warGuilds} サーバー · Ping ${warPing} ms`;
-  if ($('bar-war-fill') && makiUsers > 0) {
-    const warPercent = Math.min(100, Math.max(10, Math.round((warUsers / makiUsers) * 100)));
-    $('bar-war-fill').style.width = `${warPercent}%`;
-  }
+  if ($('bot-war-users')) $('bot-war-users').textContent = Number(warUsers).toLocaleString();
+  if ($('bot-war-guilds')) $('bot-war-guilds').textContent = warGuilds;
+  if ($('bot-war-ping')) $('bot-war-ping').textContent = warPing;
 
   // TeamBot
   const team = data.services?.rds9teambot;
   if (team && team.status === 'online') {
     const tPing = team.latency_ms !== undefined ? team.latency_ms.toFixed(1) : '183.5';
-    if ($('bar-teambot-ping')) $('bar-teambot-ping').textContent = tPing;
+    if ($('bot-teambot-ping')) $('bot-teambot-ping').textContent = tPing;
     if ($('teambot-status')) $('teambot-status').textContent = `稼働中 (Ping ${tPing}ms)`;
   }
 

@@ -78,65 +78,86 @@
         </svg>
       </article>
 
-      <!-- 4. Bot別 監視・利用者数 (柱状グラフ) -->
-      <article class="card full">
+      <!-- 4. Bot別 稼働状況 · 規模 (タイポグラフィ・スタッツ) -->
+      <article class="card full bot-showcase">
         <div class="card-head">
-          <h2>Bot別の規模 · 監視人数</h2>
-          <span class="sub">Real-time Bot Scale</span>
+          <h2>Bot 稼働状況 · 規模</h2>
+          <span class="sub">Active Bot Network</span>
         </div>
 
-        <div class="bot-bars">
+        <div class="bot-list">
           <!-- まきぐもぼっと -->
-          <div class="bot-row">
-            <div class="bot-meta">
-              <div class="bot-name-wrap">
-                <span class="bot-title">まきぐもぼっと</span>
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-title-group">
+                <span class="bot-name">まきぐもぼっと</span>
                 <span class="badge-public">一般公開中</span>
               </div>
-              <span class="bot-val"><span id="bar-maki-users">—</span> <span class="unit">人監視中</span></span>
+              <a href="https://rds9.net/makigumo/" target="_blank" class="bot-link">公式サイト ↗</a>
             </div>
-            <div class="bar-track">
-              <div class="bar-fill" id="bar-maki-fill" style="width: 100%;"></div>
-            </div>
-            <div class="bot-desc">
-              <span id="bar-maki-sub">46 サーバー · Ping — ms</span>
-              <a href="https://rds9.net/makigumo/" target="_blank" class="bot-link">公式Webサイト ↗</a>
+            <div class="bot-metrics">
+              <div class="metric-item main-metric">
+                <span class="metric-label">監視人数</span>
+                <span class="metric-val"><strong id="bot-maki-users">—</strong> <span class="unit">人</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">参加サーバー</span>
+                <span class="metric-val"><strong id="bot-maki-guilds">46</strong> <span class="unit">サーバー</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Ping</span>
+                <span class="metric-val"><strong id="bot-maki-ping">—</strong> <span class="unit">ms</span></span>
+              </div>
             </div>
           </div>
 
           <!-- 全世界戦争Bot (World War Bot) -->
-          <div class="bot-row">
-            <div class="bot-meta">
-              <div class="bot-name-wrap">
-                <span class="bot-title">全世界戦争Bot</span>
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-title-group">
+                <span class="bot-name">全世界戦争Bot</span>
                 <span class="badge-public">一般公開中</span>
               </div>
-              <span class="bot-val"><span id="bar-war-users">1,333</span> <span class="unit">人参戦中</span></span>
+              <a href="https://rds9.net/war/" target="_blank" class="bot-link">公式サイト ↗</a>
             </div>
-            <div class="bar-track">
-              <div class="bar-fill blue" id="bar-war-fill" style="width: 95%;"></div>
-            </div>
-            <div class="bot-desc">
-              <span id="bar-war-sub">27 サーバー · Ping <span id="bar-war-ping">—</span> ms</span>
-              <a href="https://rds9.net/war/" target="_blank" class="bot-link">公式Webサイト ↗</a>
+            <div class="bot-metrics">
+              <div class="metric-item main-metric">
+                <span class="metric-label">参戦プレイヤー</span>
+                <span class="metric-val"><strong id="bot-war-users">1,333</strong> <span class="unit">人</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">参加サーバー</span>
+                <span class="metric-val"><strong id="bot-war-guilds">27</strong> <span class="unit">サーバー</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Ping</span>
+                <span class="metric-val"><strong id="bot-war-ping">—</strong> <span class="unit">ms</span></span>
+              </div>
             </div>
           </div>
 
           <!-- rds9 Team Bot -->
-          <div class="bot-row">
-            <div class="bot-meta">
-              <div class="bot-name-wrap">
-                <span class="bot-title">rds9 Team Bot</span>
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-title-group">
+                <span class="bot-name">rds9 Team Bot</span>
                 <span class="badge-internal">運営専用</span>
               </div>
-              <span class="bot-val" style="color: var(--accent-2);">公式コミュニティ運用中</span>
+              <span class="bot-subnote">部署ロール自動化 · チケット管理</span>
             </div>
-            <div class="bar-track">
-              <div class="bar-fill purple" style="width: 25%;"></div>
-            </div>
-            <div class="bot-desc">
-              <span id="bar-teambot-sub">部署ロール自動化（開発 / 企画 / 広報）· チケット管理</span>
-              <span class="sub">Ping <span id="bar-teambot-ping">—</span> ms</span>
+            <div class="bot-metrics">
+              <div class="metric-item main-metric">
+                <span class="metric-label">運用ステータス</span>
+                <span class="metric-val" style="color: var(--accent-2); font-size: 20px;">公式コミュニティ稼働中</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">管理ギルド</span>
+                <span class="metric-val"><strong>1</strong> <span class="unit">サーバー</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Ping</span>
+                <span class="metric-val"><strong id="bot-teambot-ping">—</strong> <span class="unit">ms</span></span>
+              </div>
             </div>
           </div>
         </div>
