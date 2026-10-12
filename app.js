@@ -144,13 +144,7 @@ function render(data) {
   if ($('bot-war-guilds')) $('bot-war-guilds').textContent = warGuilds;
   if ($('bot-war-ping')) $('bot-war-ping').textContent = warPing;
 
-  // TeamBot
-  const team = data.services?.rds9teambot;
-  if (team && team.status === 'online') {
-    const tPing = team.latency_ms !== undefined ? team.latency_ms.toFixed(1) : '183.5';
-    if ($('bot-teambot-ping')) $('bot-teambot-ping').textContent = tPing;
-    if ($('teambot-status')) $('teambot-status').textContent = `稼働中 (Ping ${tPing}ms)`;
-  }
+
 
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
