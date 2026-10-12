@@ -40,6 +40,13 @@ let lastGoodData = {
       users: 1508,
       latency_ms: 174.9
     },
+    narisumashi: {
+      status: "online",
+      bot_name: "なりすましbot",
+      guilds: 1,
+      users: 7,
+      latency_ms: 177.1
+    },
     vps_host: {
       status: "online",
       cpus: 8,
@@ -161,6 +168,15 @@ function render(data) {
   if ($('bot-auth-users')) $('bot-auth-users').textContent = Number(authUsers).toLocaleString();
   if ($('bot-auth-guilds')) $('bot-auth-guilds').textContent = authGuilds;
   if ($('bot-auth-ping')) $('bot-auth-ping').textContent = authPing;
+
+  // Narisumashi Bot (なりすましbot)
+  const nari = data.services?.narisumashi || {};
+  const nariUsers = nari.users || 7;
+  const nariGuilds = nari.guilds || 1;
+  const nariPing = nari.latency_ms !== undefined ? nari.latency_ms.toFixed(1) : '177.1';
+  if ($('bot-nari-users')) $('bot-nari-users').textContent = Number(nariUsers).toLocaleString();
+  if ($('bot-nari-guilds')) $('bot-nari-guilds').textContent = nariGuilds;
+  if ($('bot-nari-ping')) $('bot-nari-ping').textContent = nariPing;
 
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
