@@ -26,10 +26,19 @@ let lastGoodData = {
       monitored_hentai: 1373,
       latency_ms: 183.2
     },
-    rds9teambot: {
+    worldwarbot: {
       status: "online",
-      bot_name: "rds9teambot",
-      latency_ms: 183.5
+      bot_name: "戦争bot",
+      guilds: 27,
+      users: 1334,
+      latency_ms: 174.8
+    },
+    auth: {
+      status: "online",
+      bot_name: "認証bot",
+      guilds: 20,
+      users: 1508,
+      latency_ms: 174.9
     },
     vps_host: {
       status: "online",
