@@ -42,10 +42,10 @@ let lastGoodData = {
     },
     narisumashi: {
       status: "online",
-      bot_name: "なりすましbot",
-      guilds: 1,
-      users: 7,
-      latency_ms: 177.1
+      bot_name: "なりすましchat",
+      guilds: 5,
+      users: 167,
+      latency_ms: 177.4
     },
     vps_host: {
       status: "online",
