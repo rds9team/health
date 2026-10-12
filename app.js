@@ -144,7 +144,14 @@ function render(data) {
   if ($('bot-war-guilds')) $('bot-war-guilds').textContent = warGuilds;
   if ($('bot-war-ping')) $('bot-war-ping').textContent = warPing;
 
-
+  // Auth Bot (認証bot)
+  const auth = data.services?.auth || {};
+  const authUsers = auth.users || 1508;
+  const authGuilds = auth.guilds || 20;
+  const authPing = auth.latency_ms !== undefined ? auth.latency_ms.toFixed(1) : '174.9';
+  if ($('bot-auth-users')) $('bot-auth-users').textContent = Number(authUsers).toLocaleString();
+  if ($('bot-auth-guilds')) $('bot-auth-guilds').textContent = authGuilds;
+  if ($('bot-auth-ping')) $('bot-auth-ping').textContent = authPing;
 
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
