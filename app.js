@@ -54,6 +54,13 @@ let lastGoodData = {
       users: 773,
       latency_ms: 177.2
     },
+    linkord: {
+      status: "online",
+      bot_name: "Linkord 公式Bot",
+      guilds: 1,
+      users: 348,
+      latency_ms: 175.0
+    },
     vps_host: {
       status: "online",
       cpus: 8,
@@ -206,6 +213,15 @@ function render(data) {
   if ($('bot-vc-users')) $('bot-vc-users').textContent = Number(vcUsers).toLocaleString();
   if ($('bot-vc-guilds')) $('bot-vc-guilds').textContent = vcGuilds;
   if ($('bot-vc-ping')) $('bot-vc-ping').textContent = vcPing;
+
+  // Linkord 公式Bot
+  const linkord = data.services?.linkord || {};
+  const linkordUsers = linkord.users || 348;
+  const linkordGuilds = linkord.guilds || 1;
+  const linkordPing = linkord.latency_ms !== undefined ? linkord.latency_ms.toFixed(1) : '175.0';
+  if ($('bot-linkord-users')) $('bot-linkord-users').textContent = Number(linkordUsers).toLocaleString();
+  if ($('bot-linkord-guilds')) $('bot-linkord-guilds').textContent = linkordGuilds;
+  if ($('bot-linkord-ping')) $('bot-linkord-ping').textContent = linkordPing;
 
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
