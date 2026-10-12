@@ -60,7 +60,23 @@
         <p class="sub" id="mem-sub">— / —</p>
       </article>
 
-      <!-- 3. CPU の推移 (お手本原本) -->
+      <!-- 3. ストレージ容量 -->
+      <article class="card gauge">
+        <h2>ストレージ</h2>
+        <div class="ring" id="disk-ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="52"></circle>
+            <circle class="bar" cx="60" cy="60" r="52" transform="rotate(-90 60 60)"></circle>
+          </svg>
+          <div class="ring-label">
+            <span class="num" id="disk">0</span>
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <p class="sub" id="disk-sub">— / —</p>
+      </article>
+
+      <!-- 4. CPU の推移 (お手本原本) -->
       <article class="card wide">
         <div class="card-head">
           <h2>CPU の推移</h2>
@@ -238,6 +254,7 @@
         <dl>
           <div><dt>ロードアベレージ</dt><dd id="load">—</dd></div>
           <div><dt>空きメモリ</dt><dd id="mem-free">—</dd></div>
+          <div><dt>空きストレージ</dt><dd id="disk-free">—</dd></div>
           <div><dt>アプリの稼働時間</dt><dd id="proc-uptime">—</dd></div>
           <div><dt>API Gateway</dt><dd id="gateway-status">api.rds9.net</dd></div>
           <div><dt>サーバー時刻</dt><dd id="time">—</dd></div>
@@ -250,6 +267,6 @@
       <span>pm2 で常駐中 · <a href="https://api.rds9.net/health" target="_blank">api.rds9.net/health</a> · <a href="https://api.rds9.net/api/status" target="_blank">/api/status</a></span>
     </footer>
   </main>
-  <script src="./app.js?v=20261012c" defer></script>
+  <script src="./app.js?v=20261012d" defer></script>
 </body>
 </html>

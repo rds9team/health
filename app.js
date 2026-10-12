@@ -68,9 +68,18 @@ let lastGoodData = {
       load: [0.01, 0.03, 0.00],
       uptime_seconds: 74600,
       memory: {
-        used_mb: 842,
+        used_mb: 1682,
         total_mb: 7934,
-        percent: 10.6
+        percent: 21.2
+      },
+      disk: {
+        total_bytes: 40424828928,
+        used_bytes: 6362058752,
+        free_bytes: 34045992960,
+        total_gb: 37.6,
+        used_gb: 5.9,
+        free_gb: 31.7,
+        percent: 15.7
       }
     }
   }
@@ -159,6 +168,32 @@ function render(data) {
   setRing('mem-ring', 'mem', memPercent);
   if ($('mem-sub')) $('mem-sub').textContent = `${formatGiB(memUsedBytes)} / ${formatGiB(memTotalBytes)}`;
   if ($('mem-free')) $('mem-free').textContent = formatGiB(Math.max(0, memTotalBytes - memUsedBytes));
+
+  // Storage (Disk)
+  const disk = vps.disk || data.disk || {};
+  let diskPercent = 0;
+  let diskUsedBytes = 0;
+  let diskTotalBytes = 0;
+  let diskFreeBytes = 0;
+  if (disk.total_bytes && disk.used_bytes) {
+    diskUsedBytes = disk.used_bytes;
+    diskTotalBytes = disk.total_bytes;
+    diskFreeBytes = disk.free_bytes !== undefined ? disk.free_bytes : Math.max(0, diskTotalBytes - diskUsedBytes);
+    diskPercent = disk.percent !== undefined ? disk.percent : (diskUsedBytes / diskTotalBytes) * 100;
+  } else if (disk.total && disk.used) {
+    diskUsedBytes = disk.used;
+    diskTotalBytes = disk.total;
+    diskFreeBytes = disk.free !== undefined ? disk.free : Math.max(0, diskTotalBytes - diskUsedBytes);
+    diskPercent = disk.percent !== undefined ? disk.percent : (diskUsedBytes / diskTotalBytes) * 100;
+  } else if (disk.total_gb && disk.used_gb) {
+    diskUsedBytes = disk.used_gb * (1024 ** 3);
+    diskTotalBytes = disk.total_gb * (1024 ** 3);
+    diskFreeBytes = (disk.free_gb || Math.max(0, disk.total_gb - disk.used_gb)) * (1024 ** 3);
+    diskPercent = disk.percent !== undefined ? disk.percent : (disk.used_gb / disk.total_gb) * 100;
+  }
+  setRing('disk-ring', 'disk', diskPercent);
+  if ($('disk-sub')) $('disk-sub').textContent = `${formatGiB(diskUsedBytes)} / ${formatGiB(diskTotalBytes)}`;
+  if ($('disk-free')) $('disk-free').textContent = formatGiB(diskFreeBytes);
 
   // Load
   const load = vps.load || data.load || [];
@@ -276,7 +311,8 @@ async function fetchStatus() {
                   used_mb: Math.round(d.memory.used / (1024 * 1024)),
                   total_mb: Math.round(d.memory.total / (1024 * 1024)),
                   percent: Math.round((d.memory.used / d.memory.total) * 100)
-                }
+                },
+                disk: d.disk || lastGoodData.services.vps_host.disk
               }
             }
           };
