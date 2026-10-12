@@ -47,6 +47,13 @@ let lastGoodData = {
       users: 167,
       latency_ms: 177.4
     },
+    vc: {
+      status: "online",
+      bot_name: "VC自動作成bot",
+      guilds: 8,
+      users: 773,
+      latency_ms: 177.2
+    },
     vps_host: {
       status: "online",
       cpus: 8,
@@ -176,6 +183,15 @@ function render(data) {
   if ($('bot-nari-users')) $('bot-nari-users').textContent = Number(nariUsers).toLocaleString();
   if ($('bot-nari-guilds')) $('bot-nari-guilds').textContent = nariGuilds;
   if ($('bot-nari-ping')) $('bot-nari-ping').textContent = nariPing;
+
+  // VC Manager Bot (VC自動作成bot)
+  const vc = data.services?.vc || {};
+  const vcUsers = vc.users || 773;
+  const vcGuilds = vc.guilds || 8;
+  const vcPing = vc.latency_ms !== undefined ? vc.latency_ms.toFixed(1) : '177.2';
+  if ($('bot-vc-users')) $('bot-vc-users').textContent = Number(vcUsers).toLocaleString();
+  if ($('bot-vc-guilds')) $('bot-vc-guilds').textContent = vcGuilds;
+  if ($('bot-vc-ping')) $('bot-vc-ping').textContent = vcPing;
 
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
