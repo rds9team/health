@@ -149,7 +149,6 @@ function render(data) {
   if ($('bot-maki-users')) $('bot-maki-users').textContent = Number(makiUsers).toLocaleString();
   if ($('bot-maki-guilds')) $('bot-maki-guilds').textContent = makiGuilds;
   if ($('bot-maki-ping')) $('bot-maki-ping').textContent = makiPing;
-  if ($('maki-ping')) $('maki-ping').textContent = `${makiPing} ms`;
 
   // World War Bot
   const war = data.services?.worldwarbot || {};
