@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>rds9 health — システムの様子</title>
   <link rel="icon" href="https://rds9.net/index/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./app.css">
+  <link rel="stylesheet" href="./app.css?v=20261012b">
 </head>
 <body>
   <main class="shell">
@@ -34,7 +34,7 @@
         <div class="ring" id="cpu-ring">
           <svg viewBox="0 0 120 120" aria-hidden="true">
             <circle class="track" cx="60" cy="60" r="52"></circle>
-            <circle class="bar" cx="60" cy="60" r="52"></circle>
+            <circle class="bar" cx="60" cy="60" r="52" transform="rotate(-90 60 60)"></circle>
           </svg>
           <div class="ring-label">
             <span class="num" id="cpu">0</span>
@@ -50,7 +50,7 @@
         <div class="ring" id="mem-ring">
           <svg viewBox="0 0 120 120" aria-hidden="true">
             <circle class="track" cx="60" cy="60" r="52"></circle>
-            <circle class="bar" cx="60" cy="60" r="52"></circle>
+            <circle class="bar" cx="60" cy="60" r="52" transform="rotate(-90 60 60)"></circle>
           </svg>
           <div class="ring-label">
             <span class="num" id="mem">0</span>
@@ -226,6 +226,6 @@
       <span>pm2 で常駐中 · <a href="https://api.rds9.net/health" target="_blank">api.rds9.net/health</a> · <a href="https://api.rds9.net/api/status" target="_blank">/api/status</a></span>
     </footer>
   </main>
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=20261012b" defer></script>
 </body>
 </html>
