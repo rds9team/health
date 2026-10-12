@@ -196,13 +196,19 @@ h1 {
 
 .ring {
   position: relative;
-  width: min(100%, 150px);
+  width: min(100%, 140px);
   aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .ring svg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
+  transform-origin: 50% 50%;
 }
 .ring circle {
   fill: none;
@@ -214,25 +220,24 @@ h1 {
 .ring .bar {
   stroke: var(--accent);
   stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: calc(100 - var(--value));
-  transition: stroke-dashoffset .8s cubic-bezier(.2, .8, .2, 1), stroke .4s;
+  stroke-dasharray: 326.73;
+  stroke-dashoffset: 326.73;
+  transition: stroke-dashoffset .8s cubic-bezier(.2, .8, .2, 1), stroke .4s, opacity .3s;
 }
 .ring[data-level="warn"] .bar { stroke: var(--warn); }
 .ring[data-level="bad"] .bar { stroke: var(--bad); }
 
 .ring-label {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: flex;
   align-items: baseline;
   justify-content: center;
-  padding-top: 36%;
   font-family: var(--mono);
+  pointer-events: none;
 }
 
 .num {
-  font-size: clamp(26px, 6vw, 34px);
+  font-size: clamp(24px, 5.5vw, 32px);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -390,4 +395,22 @@ h1 {
   .ring .bar { transition: none; }
   .bar-fill { transition: none; }
   .live[data-state="ok"] .dot { animation: none; }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    gap: 12px;
+  }
+  .card {
+    padding: 16px 12px;
+  }
+  .gauge {
+    gap: 8px;
+  }
+  .ring {
+    width: min(100%, 115px);
+  }
+  .sub {
+    font-size: 11px;
+  }
 }

@@ -83,12 +83,26 @@ function formatDuration(sec) {
 
 const formatGiB = (bytes) => `${(bytes / 1024 ** 3).toFixed(1)} GB`;
 
+const CIRCUMFERENCE = 326.73; // 2 * Math.PI * 52
+
 function setRing(ringId, numId, percent) {
   const ring = $(ringId);
   if (!ring) return;
-  const val = Math.max(0, Math.min(100, percent || 0));
-  ring.style.setProperty('--value', val.toFixed(1));
+  const val = Math.max(0, Math.min(100, Number(percent) || 0));
   ring.dataset.level = val >= 90 ? 'bad' : val >= 70 ? 'warn' : 'ok';
+
+  const bar = ring.querySelector('.bar');
+  if (bar) {
+    if (val <= 0) {
+      bar.style.strokeDashoffset = `${CIRCUMFERENCE}`;
+      bar.style.opacity = '0';
+    } else {
+      const offset = CIRCUMFERENCE * (1 - val / 100);
+      bar.style.strokeDashoffset = `${offset.toFixed(2)}`;
+      bar.style.opacity = '1';
+    }
+  }
+
   const numEl = $(numId);
   if (numEl) numEl.textContent = Math.round(val);
 }
