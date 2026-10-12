@@ -169,11 +169,11 @@ function render(data) {
   if ($('bot-auth-guilds')) $('bot-auth-guilds').textContent = authGuilds;
   if ($('bot-auth-ping')) $('bot-auth-ping').textContent = authPing;
 
-  // Narisumashi Bot (なりすましbot)
+  // Narisumashi Bot (なりすましchat)
   const nari = data.services?.narisumashi || {};
-  const nariUsers = nari.users || 7;
-  const nariGuilds = nari.guilds || 1;
-  const nariPing = nari.latency_ms !== undefined ? nari.latency_ms.toFixed(1) : '177.1';
+  const nariUsers = nari.users || 167;
+  const nariGuilds = nari.guilds || 5;
+  const nariPing = nari.latency_ms !== undefined ? nari.latency_ms.toFixed(1) : '174.7';
   if ($('bot-nari-users')) $('bot-nari-users').textContent = Number(nariUsers).toLocaleString();
   if ($('bot-nari-guilds')) $('bot-nari-guilds').textContent = nariGuilds;
   if ($('bot-nari-ping')) $('bot-nari-ping').textContent = nariPing;
