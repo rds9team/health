@@ -6,84 +6,12 @@ const history = [0.2, 0.4, 0.1, 0.3, 0.2, 0.4, 0.1, 0.3];
 
 const DEFAULT_API_ENDPOINT = "https://api.rds9.net/health";
 const FALLBACK_ENDPOINTS = [
-  "https://api.rds9.net/health",
-  "http://vps-gateway.sorahost.net:62081/api/status"
+  "https://api.rds9.net/health"
 ];
 
-const urlParams = new URLSearchParams(window.location.search);
-const ACTIVE_ENDPOINT = urlParams.get("api") || DEFAULT_API_ENDPOINT;
+const ACTIVE_ENDPOINT = DEFAULT_API_ENDPOINT;
 
-// Default initial payload to ensure UI renders instantly even before first fetch
-let lastGoodData = {
-  status: "operational",
-  uptimeSec: 74600,
-  services: {
-    makigumo: {
-      status: "online",
-      bot_name: "まきぐもぼっと",
-      guilds: 46,
-      users: 1373,
-      monitored_hentai: 1373,
-      latency_ms: 183.2
-    },
-    worldwarbot: {
-      status: "online",
-      bot_name: "戦争bot",
-      guilds: 27,
-      users: 1334,
-      latency_ms: 174.8
-    },
-    auth: {
-      status: "online",
-      bot_name: "認証bot",
-      guilds: 20,
-      users: 1508,
-      latency_ms: 174.9
-    },
-    narisumashi: {
-      status: "online",
-      bot_name: "なりすましchat",
-      guilds: 5,
-      users: 167,
-      latency_ms: 177.4
-    },
-    vc: {
-      status: "online",
-      bot_name: "VC自動作成bot",
-      guilds: 8,
-      users: 773,
-      latency_ms: 177.2
-    },
-    linkord: {
-      status: "online",
-      bot_name: "Linkord 公式Bot",
-      guilds: 1,
-      users: 348,
-      latency_ms: 175.0
-    },
-    vps_host: {
-      status: "online",
-      cpus: 8,
-      cpu_percent: 0.1,
-      load: [0.01, 0.03, 0.00],
-      uptime_seconds: 74600,
-      memory: {
-        used_mb: 1682,
-        total_mb: 7934,
-        percent: 21.2
-      },
-      disk: {
-        total_bytes: 40424828928,
-        used_bytes: 6362058752,
-        free_bytes: 34045992960,
-        total_gb: 37.6,
-        used_gb: 5.9,
-        free_gb: 31.7,
-        percent: 15.7
-      }
-    }
-  }
-};
+let lastGoodData = null;
 
 function formatDuration(sec) {
   if (!sec || isNaN(sec)) return "—";
@@ -143,14 +71,28 @@ function drawSpark() {
   if (sparkArea) sparkArea.setAttribute('d', `${line} L${W},${H} L${firstX},${H} Z`);
 }
 
+function renderValue(elId, val, isLocaleNumber = false) {
+  const el = $(elId);
+  if (!el) return;
+  if (val === undefined || val === null || val === '—') {
+    el.textContent = '—';
+  } else if (isLocaleNumber && !isNaN(Number(val))) {
+    el.textContent = Number(val).toLocaleString();
+  } else {
+    el.textContent = String(val);
+  }
+}
+
 function render(data) {
+  if (!data) return;
+
   const vps = data.services?.vps_host || {};
-  const uptimeSec = vps.uptime_seconds || data.uptimeSec || 0;
-  if ($('uptime')) $('uptime').textContent = formatDuration(uptimeSec);
+  const uptimeSec = vps.uptime_seconds || data.uptime_seconds || data.uptimeSec || 0;
+  if ($('uptime')) $('uptime').textContent = uptimeSec ? formatDuration(uptimeSec) : '—';
 
   const cpuPercent = vps.cpu_percent !== undefined ? vps.cpu_percent : (data.cpuPercent || 0);
   setRing('cpu-ring', 'cpu', cpuPercent);
-  if ($('cpu-sub')) $('cpu-sub').textContent = `${vps.cpus || data.cpus || 8} コア`;
+  if ($('cpu-sub')) $('cpu-sub').textContent = `${vps.cpus || data.cpus || '—'} コア`;
 
   // Memory
   let memPercent = 0;
@@ -166,8 +108,8 @@ function render(data) {
     memTotalBytes = (vps.memory.total_mb || 1) * 1024 * 1024;
   }
   setRing('mem-ring', 'mem', memPercent);
-  if ($('mem-sub')) $('mem-sub').textContent = `${formatGiB(memUsedBytes)} / ${formatGiB(memTotalBytes)}`;
-  if ($('mem-free')) $('mem-free').textContent = formatGiB(Math.max(0, memTotalBytes - memUsedBytes));
+  if ($('mem-sub')) $('mem-sub').textContent = memTotalBytes ? `${formatGiB(memUsedBytes)} / ${formatGiB(memTotalBytes)}` : '—';
+  if ($('mem-free')) $('mem-free').textContent = memTotalBytes ? formatGiB(Math.max(0, memTotalBytes - memUsedBytes)) : '—';
 
   // Storage (Disk)
   const disk = vps.disk || data.disk || {};
@@ -192,8 +134,8 @@ function render(data) {
     diskPercent = disk.percent !== undefined ? disk.percent : (disk.used_gb / disk.total_gb) * 100;
   }
   setRing('disk-ring', 'disk', diskPercent);
-  if ($('disk-sub')) $('disk-sub').textContent = `${formatGiB(diskUsedBytes)} / ${formatGiB(diskTotalBytes)}`;
-  if ($('disk-free')) $('disk-free').textContent = formatGiB(diskFreeBytes);
+  if ($('disk-sub')) $('disk-sub').textContent = diskTotalBytes ? `${formatGiB(diskUsedBytes)} / ${formatGiB(diskTotalBytes)}` : '—';
+  if ($('disk-free')) $('disk-free').textContent = diskTotalBytes ? formatGiB(diskFreeBytes) : '—';
 
   // Load
   const load = vps.load || data.load || [];
@@ -203,69 +145,70 @@ function render(data) {
   if ($('time')) $('time').textContent = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
 
   // Makigumo
-  const maki = data.services?.makigumo || {};
-  const makiUsers = maki.users || maki.monitored_hentai || 1373;
-  const makiGuilds = maki.guilds || 46;
-  const makiPing = maki.latency_ms !== undefined ? maki.latency_ms.toFixed(1) : '183.2';
-
-  if ($('maki-stat')) $('maki-stat').textContent = Number(makiUsers).toLocaleString();
-  if ($('bot-maki-users')) $('bot-maki-users').textContent = Number(makiUsers).toLocaleString();
-  if ($('bot-maki-guilds')) $('bot-maki-guilds').textContent = makiGuilds;
-  if ($('bot-maki-ping')) $('bot-maki-ping').textContent = makiPing;
+  const maki = data.services?.makigumo;
+  const makiUsers = maki?.users ?? maki?.monitored_hentai ?? '—';
+  const makiGuilds = maki?.guilds ?? '—';
+  const makiPing = (maki?.latency_ms !== undefined && maki.latency_ms !== null) ? Number(maki.latency_ms).toFixed(1) : '—';
+  renderValue('maki-stat', makiUsers, true);
+  renderValue('bot-maki-users', makiUsers, true);
+  renderValue('bot-maki-guilds', makiGuilds);
+  renderValue('bot-maki-ping', makiPing);
 
   // World War Bot
-  const war = data.services?.worldwarbot || {};
-  const warUsers = war.users || 1333;
-  const warGuilds = war.guilds || 27;
-  const warPing = war.latency_ms !== undefined ? war.latency_ms.toFixed(1) : '175.0';
-  if ($('bot-war-users')) $('bot-war-users').textContent = Number(warUsers).toLocaleString();
-  if ($('bot-war-guilds')) $('bot-war-guilds').textContent = warGuilds;
-  if ($('bot-war-ping')) $('bot-war-ping').textContent = warPing;
+  const war = data.services?.worldwarbot;
+  const warUsers = war?.users ?? '—';
+  const warGuilds = war?.guilds ?? '—';
+  const warPing = (war?.latency_ms !== undefined && war.latency_ms !== null) ? Number(war.latency_ms).toFixed(1) : '—';
+  renderValue('bot-war-users', warUsers, true);
+  renderValue('bot-war-guilds', warGuilds);
+  renderValue('bot-war-ping', warPing);
 
   // Auth Bot (認証bot)
-  const auth = data.services?.auth || {};
-  const authUsers = auth.users || 1508;
-  const authGuilds = auth.guilds || 20;
-  const authPing = auth.latency_ms !== undefined ? auth.latency_ms.toFixed(1) : '174.9';
-  if ($('bot-auth-users')) $('bot-auth-users').textContent = Number(authUsers).toLocaleString();
-  if ($('bot-auth-guilds')) $('bot-auth-guilds').textContent = authGuilds;
-  if ($('bot-auth-ping')) $('bot-auth-ping').textContent = authPing;
+  const auth = data.services?.auth;
+  const authUsers = auth?.users ?? '—';
+  const authGuilds = auth?.guilds ?? '—';
+  const authPing = (auth?.latency_ms !== undefined && auth.latency_ms !== null) ? Number(auth.latency_ms).toFixed(1) : '—';
+  renderValue('bot-auth-users', authUsers, true);
+  renderValue('bot-auth-guilds', authGuilds);
+  renderValue('bot-auth-ping', authPing);
 
   // Narisumashi Bot (なりすましchat)
-  const nari = data.services?.narisumashi || {};
-  const nariUsers = nari.users || 167;
-  const nariGuilds = nari.guilds || 5;
-  const nariPing = nari.latency_ms !== undefined ? nari.latency_ms.toFixed(1) : '174.7';
-  if ($('bot-nari-users')) $('bot-nari-users').textContent = Number(nariUsers).toLocaleString();
-  if ($('bot-nari-guilds')) $('bot-nari-guilds').textContent = nariGuilds;
-  if ($('bot-nari-ping')) $('bot-nari-ping').textContent = nariPing;
+  const nari = data.services?.narisumashi;
+  const nariUsers = nari?.users ?? '—';
+  const nariGuilds = nari?.guilds ?? '—';
+  const nariPing = (nari?.latency_ms !== undefined && nari.latency_ms !== null) ? Number(nari.latency_ms).toFixed(1) : '—';
+  renderValue('bot-nari-users', nariUsers, true);
+  renderValue('bot-nari-guilds', nariGuilds);
+  renderValue('bot-nari-ping', nariPing);
 
   // VC Manager Bot (VC自動作成bot)
-  const vc = data.services?.vc || {};
-  const vcUsers = vc.users || 773;
-  const vcGuilds = vc.guilds || 8;
-  const vcPing = vc.latency_ms !== undefined ? vc.latency_ms.toFixed(1) : '177.2';
-  if ($('bot-vc-users')) $('bot-vc-users').textContent = Number(vcUsers).toLocaleString();
-  if ($('bot-vc-guilds')) $('bot-vc-guilds').textContent = vcGuilds;
-  if ($('bot-vc-ping')) $('bot-vc-ping').textContent = vcPing;
+  const vc = data.services?.vc;
+  const vcUsers = vc?.users ?? '—';
+  const vcGuilds = vc?.guilds ?? '—';
+  const vcPing = (vc?.latency_ms !== undefined && vc.latency_ms !== null) ? Number(vc.latency_ms).toFixed(1) : '—';
+  renderValue('bot-vc-users', vcUsers, true);
+  renderValue('bot-vc-guilds', vcGuilds);
+  renderValue('bot-vc-ping', vcPing);
 
   // Linkord 公式Bot
-  const linkord = data.services?.linkord || {};
-  const linkordUsers = linkord.users || 348;
-  const linkordGuilds = linkord.guilds || 1;
-  const linkordPing = linkord.latency_ms !== undefined ? linkord.latency_ms.toFixed(1) : '175.0';
-  if ($('bot-linkord-users')) $('bot-linkord-users').textContent = Number(linkordUsers).toLocaleString();
-  if ($('bot-linkord-guilds')) $('bot-linkord-guilds').textContent = linkordGuilds;
-  if ($('bot-linkord-ping')) $('bot-linkord-ping').textContent = linkordPing;
+  const linkord = data.services?.linkord;
+  const linkordUsers = linkord?.users ?? '—';
+  const linkordGuilds = linkord?.guilds ?? '—';
+  const linkordPing = (linkord?.latency_ms !== undefined && linkord.latency_ms !== null) ? Number(linkord.latency_ms).toFixed(1) : '—';
+  renderValue('bot-linkord-users', linkordUsers, true);
+  renderValue('bot-linkord-guilds', linkordGuilds);
+  renderValue('bot-linkord-ping', linkordPing);
 
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
-  if ($('proc-uptime')) $('proc-uptime').textContent = formatDuration(procUp);
+  if ($('proc-uptime')) $('proc-uptime').textContent = procUp ? formatDuration(procUp) : '—';
 
   // Sparkline history
-  history.push(cpuPercent);
-  if (history.length > HISTORY) history.shift();
-  drawSpark();
+  if (cpuPercent !== undefined) {
+    history.push(cpuPercent);
+    if (history.length > HISTORY) history.shift();
+    drawSpark();
+  }
 }
 
 function setLive(state, text, headline) {
@@ -300,7 +243,7 @@ async function fetchStatus() {
             ...lastGoodData,
             uptimeSec: d.uptimeSec,
             services: {
-              ...lastGoodData.services,
+              ...(lastGoodData?.services || {}),
               vps_host: {
                 status: "online",
                 cpus: d.cpus,
@@ -312,13 +255,12 @@ async function fetchStatus() {
                   total_mb: Math.round(d.memory.total / (1024 * 1024)),
                   percent: Math.round((d.memory.used / d.memory.total) * 100)
                 },
-                disk: d.disk || lastGoodData.services.vps_host.disk
+                disk: d.disk || lastGoodData?.services?.vps_host?.disk
               }
             }
           };
         }
         lastGoodData = d;
-        console.log("[rds9 health] live fetch success from:", rawUrl);
         return { ok: true, data: d };
       }
     } catch (e) {
@@ -326,22 +268,24 @@ async function fetchStatus() {
     }
   }
 
-  // Return fallback data so the UI never displays broken states
-  console.info("[rds9 health] using cached state");
-  return { ok: true, data: lastGoodData };
+  // All endpoints failed
+  return { ok: false, data: lastGoodData };
 }
 
 async function tick() {
   const res = await fetchStatus();
-  if (res.ok) {
+  if (res.ok && res.data) {
     render(res.data);
     setLive("ok", "稼働中", "正常に稼働中");
   } else {
-    setLive("down", "応答なし", "応答がありません");
+    if (lastGoodData) {
+      setLive("degraded", "応答なし", "ステータスの更新に失敗しました");
+    } else {
+      setLive("down", "応答なし", "応答がありません");
+    }
   }
 }
 
-// Render initial cache immediately for 0ms blank time
-render(lastGoodData);
+// Initial tick
 tick();
 setInterval(tick, INTERVAL_MS);
