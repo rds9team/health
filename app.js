@@ -199,6 +199,15 @@ function render(data) {
   renderValue('bot-linkord-guilds', linkordGuilds);
   renderValue('bot-linkord-ping', linkordPing);
 
+  // Fort9
+  const fort9 = data.services?.fort9;
+  const fort9Users = fort9?.users ?? '—';
+  const fort9Guilds = fort9?.guilds ?? '—';
+  const fort9Ping = (fort9?.latency_ms !== undefined && fort9.latency_ms !== null) ? Number(fort9.latency_ms).toFixed(1) : '—';
+  renderValue('bot-fort9-users', fort9Users, true);
+  renderValue('bot-fort9-guilds', fort9Guilds);
+  renderValue('bot-fort9-ping', fort9Ping);
+
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
   if ($('proc-uptime')) $('proc-uptime').textContent = procUp ? formatDuration(procUp) : '—';
