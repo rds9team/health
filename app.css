@@ -175,6 +175,16 @@ h1 {
   border-radius: 4px;
 }
 
+.badge-dev {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warn) 25%, transparent);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
 .sub {
   margin: 0;
   font-size: 12px;
