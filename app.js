@@ -208,6 +208,15 @@ function render(data) {
   renderValue('bot-fort9-guilds', fort9Guilds);
   renderValue('bot-fort9-ping', fort9Ping);
 
+  // biord
+  const biord = data.services?.biord;
+  const biordUsers = biord?.users ?? '—';
+  const biordGuilds = biord?.guilds ?? '—';
+  const biordPing = (biord?.latency_ms !== undefined && biord.latency_ms !== null) ? Number(biord.latency_ms).toFixed(1) : '—';
+  renderValue('bot-biord-users', biordUsers, true);
+  renderValue('bot-biord-guilds', biordGuilds);
+  renderValue('bot-biord-ping', biordPing);
+
   // App Uptime
   const procUp = data.processUptimeSec || data.uptime_seconds || uptimeSec;
   if ($('proc-uptime')) $('proc-uptime').textContent = procUp ? formatDuration(procUp) : '—';
